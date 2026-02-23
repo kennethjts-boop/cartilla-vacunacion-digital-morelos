@@ -9,7 +9,7 @@ export default function GuiaUsuarioPage() {
                     <div className="flex justify-between items-center h-20">
                         <div className="flex items-center gap-4">
                             <Link href="/inicio" className="flex items-center gap-4 hover:opacity-90">
-                                <img alt="Logotipo Oficial Gobierno de Morelos" className="h-12 w-auto object-contain mix-blend-multiply dark:mix-blend-normal dark:bg-white dark:rounded-xl dark:px-2" src="/logo_morelos_oficial.png" />
+                                <img alt="Logotipo Oficial Gobierno de Morelos" className="h-12 w-auto object-contain mix-blend-multiply dark:mix-blend-normal dark:bg-white dark:rounded-xl dark:px-2" src="/logos/logo_morelos_oficial.png" />
                                 <div className="hidden md:block h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
                                 <div className="hidden md:flex flex-col">
                                     <span className="text-primary font-bold text-lg leading-tight uppercase tracking-tight">Cartilla Digital</span>
@@ -308,7 +308,7 @@ export default function GuiaUsuarioPage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-8">
                         <div className="flex items-center gap-4">
-                            <img alt="Escudo del Estado de Morelos" className="h-10 w-auto opacity-70 grayscale hover:grayscale-0 transition-all mix-blend-multiply dark:mix-blend-normal dark:bg-white dark:rounded-md dark:p-1" src="/logo_morelos_oficial.png" />
+                            <img alt="Escudo del Estado de Morelos" className="h-10 w-auto opacity-70 grayscale hover:grayscale-0 transition-all mix-blend-multiply dark:mix-blend-normal dark:bg-white dark:rounded-md dark:p-1" src="/logos/logo_morelos_oficial.png" />
                             <div className="flex flex-col">
                                 <span className="text-sm font-bold text-slate-800 dark:text-slate-200">Gobierno del Estado de Morelos</span>
                                 <span className="text-[10px] text-slate-500 uppercase tracking-widest">Secretaría de Salud Estatal</span>

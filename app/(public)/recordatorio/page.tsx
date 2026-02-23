@@ -17,7 +17,7 @@ export default function RecordatorioEmail() {
                     <div className="bg-white border-b border-slate-100 p-6 flex items-center justify-center">
                         <div className="w-full max-w-[500px]">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img className="w-full h-auto object-contain" alt="Logotipo Institucional Morelos" src="/logo_morelos_oficial.png" />
+                            <img className="w-full h-auto object-contain" alt="Logotipo Institucional Morelos" src="/logos/logo_morelos_oficial.png" />
                         </div>
                     </div>
 

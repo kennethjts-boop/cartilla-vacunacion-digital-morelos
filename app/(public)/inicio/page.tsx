@@ -8,7 +8,7 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-20">
                         <div className="flex items-center gap-4">
-                            <img alt="Morelos Salud Logo" className="h-12 w-auto object-contain" src="/logo_morelos_oficial.png" />
+                            <img alt="Morelos Salud Logo" className="h-12 w-auto object-contain" src="/logos/logo_morelos_oficial.png" />
                             <div className="hidden md:block h-8 w-px bg-slate-200 mx-2"></div>
                             <h1 className="hidden lg:block text-primary font-bold text-lg leading-tight">
                                 Cartilla Digital <br /><span className="text-xs font-medium uppercase tracking-wider text-slate-500">Estado de Morelos</span>
@@ -59,7 +59,7 @@ export default function LandingPage() {
                             <div className="relative flex items-center justify-center">
                                 <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl scale-150 -z-10"></div>
                                 <div className="relative w-full max-w-lg bg-white dark:bg-slate-800 p-3 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-2xl z-10 transform rotate-2 hover:rotate-0 transition-transform duration-500">
-                                    <img alt="Familias de Morelos Vacunándose" className="rounded-2xl w-full h-auto object-cover aspect-square sm:aspect-[4/3] shadow-inner" src="/img_familia.png" />
+                                    <img alt="Familias de Morelos Vacunándose" className="rounded-2xl w-full h-auto object-cover aspect-square sm:aspect-[4/3] shadow-inner" src="/hero/img_familia.png" />
                                 </div>
                             </div>
                         </div>
@@ -162,7 +162,7 @@ export default function LandingPage() {
                             <div className="lg:w-1/2 grid grid-cols-2 gap-4">
                                 <div className="space-y-4">
                                     <div className="h-64 rounded-2xl bg-slate-100 dark:bg-slate-800 overflow-hidden border border-slate-200 dark:border-slate-700">
-                                        <img alt="Consulta móvil" className="w-full h-full object-cover" src="/img_familia.png" />
+                                        <img alt="Consulta móvil" className="w-full h-full object-cover" src="/hero/img_familia.png" />
                                     </div>
                                     <div className="h-40 rounded-2xl bg-primary/5 border border-primary/10 flex items-center justify-center p-6 text-center italic text-primary font-bold">
                                         "Es mucho más fácil no tener que cargar con la cartilla física a todos lados."
@@ -170,10 +170,10 @@ export default function LandingPage() {
                                 </div>
                                 <div className="space-y-4 pt-8">
                                     <div className="h-40 bg-slate-100 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
-                                        <img alt="Atención Médica" className="w-full h-full object-cover" src="/img_ninos.png" />
+                                        <img alt="Atención Médica" className="w-full h-full object-cover" src="/hero/img_ninos.png" />
                                     </div>
                                     <div className="h-64 bg-slate-200 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
-                                        <img alt="Escaneo QR" className="w-full h-full object-cover" src="/img_familia.png" />
+                                        <img alt="Escaneo QR" className="w-full h-full object-cover" src="/hero/img_familia.png" />
                                     </div>
                                 </div>
                             </div>
@@ -207,7 +207,7 @@ export default function LandingPage() {
                                 </div>
                                 <div className="hidden lg:flex items-center justify-center relative w-full h-full min-h-[400px]">
                                     <div className="absolute inset-0 bg-gradient-to-t from-primary/50 to-transparent rounded-[2.5rem] z-10 pointer-events-none"></div>
-                                    <img alt="Campaña de Vacunación Infantil" className="absolute inset-0 w-full h-full rounded-[2.5rem] shadow-2xl border-4 border-white/20 z-0 object-cover object-center" src="/img_ninos.png" />
+                                    <img alt="Campaña de Vacunación Infantil" className="absolute inset-0 w-full h-full rounded-[2.5rem] shadow-2xl border-4 border-white/20 z-0 object-cover object-center" src="/hero/img_ninos.png" />
                                 </div>
                             </div>
                         </div>
@@ -220,7 +220,7 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid md:grid-cols-4 gap-12 mb-12">
                         <div className="col-span-2">
-                            <img alt="Secretaría de Salud de Morelos" src="/logo_morelos_oficial.png" className="h-16 mb-6 opacity-80" />
+                            <img alt="Secretaría de Salud de Morelos" src="/logos/logo_morelos_oficial.png" className="h-16 mb-6 opacity-80" />
                             <p className="text-slate-500 max-w-sm text-xs font-medium leading-relaxed">
                                 Plataforma oficial del Gobierno del Estado de Morelos. La información contenida es de carácter confidencial y para uso exclusivo del seguimiento de salud pública estatal.
                             </p>

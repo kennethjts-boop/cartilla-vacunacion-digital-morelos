@@ -16,7 +16,7 @@ export default function Topbar({ user }: TopbarProps) {
                 <div className="hidden md:flex items-center h-10 mix-blend-multiply dark:mix-blend-normal dark:bg-white/90 dark:p-1 dark:rounded-md transition-all">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                        src="/logo_morelos_oficial.png"
+                        src="/logos/logo_morelos_oficial.png"
                         alt="Secretaría de Salud - Gobierno del Estado de Morelos"
                         className="h-full w-auto object-contain"
                     />
