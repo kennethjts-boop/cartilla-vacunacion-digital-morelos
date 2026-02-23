@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("ADMIN_ESTATAL") // e.g., ADMIN_ESTATAL, MEDICO, PADRE
+  jurisdiction String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Patient {
+  id             String   @id @default(uuid())
+  curp           String   @unique
+  firstName      String
+  lastName       String
+  dateOfBirth    DateTime
+  gender         String
+  municipality   String
+  healthCenterId String?
+  healthCenter   HealthCenter? @relation(fields: [healthCenterId], references: [id])
+  vaccineRecords VaccineRecord[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Vaccine {
+  id                   String   @id @default(uuid())
+  name                 String   @unique // e.g., "BCG (Tuberculosis)", "Pentavalente Acelular"
+  dosesRequired        Int
+  recommendedAgeMonths Int
+  records              VaccineRecord[]
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model VaccineRecord {
+  id             String   @id @default(uuid())
+  patientId      String
+  vaccineId      String
+  healthCenterId String
+  dateAdministered DateTime?
+  status         String   // e.g., "COMPLETADO", "PENDIENTE", "ATRASADO"
+  
+  patient        Patient  @relation(fields: [patientId], references: [id])
+  vaccine        Vaccine  @relation(fields: [vaccineId], references: [id])
+  healthCenter   HealthCenter @relation(fields: [healthCenterId], references: [id])
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model HealthCenter {
+  id             String   @id @default(uuid())
+  name           String   // e.g., "Hospital General de Jiutepec", "Centro Salud Cuernavaca Centro"
+  municipality   String
+  jurisdiction   String
+  patients       Patient[]
+  vaccineRecords VaccineRecord[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
