@@ -1,6 +1,8 @@
 import { getHealthCenters } from "@/app/actions/registro";
 import Link from "next/link";
 
+export const dynamic = 'force-dynamic';
+
 export default async function CentrosPage() {
     const response = await getHealthCenters()
     const centros = response.success ? response.data || [] : []
