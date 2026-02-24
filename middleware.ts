@@ -3,8 +3,9 @@ import type { NextRequest } from 'next/server'
 import { getSession } from './lib/auth'
 
 // Protected routes (require valid JWT)
-const protectedRoutes = ['/', '/registro']
-const publicRoutes = ['/login']
+// Protected routes (require valid JWT)
+const protectedRoutes = ['/']
+const publicRoutes = ['/login', '/registro']
 
 export async function middleware(req: NextRequest) {
     const path = req.nextUrl.pathname
@@ -12,7 +13,7 @@ export async function middleware(req: NextRequest) {
 
     // Redirect to login if accessing any protected route without session
     // (Assuming all routes except login, public pages and api are protected)
-    const isPublicRoute = publicRoutes.includes(path) || path.startsWith('/inicio') || path.startsWith('/recuperacion')
+    const isPublicRoute = publicRoutes.includes(path) || path.startsWith('/inicio') || path.startsWith('/recuperacion') || path.startsWith('/registro')
 
     const session = await getSession()
 

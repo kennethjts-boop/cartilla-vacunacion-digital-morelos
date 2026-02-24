@@ -1,7 +1,8 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import QRCode from 'qrcode';
 import { renderTableNinos, renderTableAdolescentes, renderTableAdultos, renderTableMayores, renderTableRiesgo } from '@/app/components/dashboard/VaccineTables';
 
 function CertificadoContent() {
@@ -10,6 +11,31 @@ function CertificadoContent() {
     const name = searchParams.get('name') || '{name}';
     const bloodType = searchParams.get('bloodType') || '';
     const activeGroup = searchParams.get('group') || '0-9';
+
+    const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
+
+    useEffect(() => {
+        const generateQR = async () => {
+            try {
+                // Generate verification URL or data string
+                const verificationData = `${window.location.origin}/verificar?curp=${curp}&folio=MOR-24-88A`;
+
+                const url = await QRCode.toDataURL(verificationData, {
+                    width: 200,
+                    margin: 2,
+                    color: {
+                        dark: '#000000',
+                        light: '#ffffff',
+                    },
+                });
+                setQrCodeUrl(url);
+            } catch (err) {
+                console.error('Error generating QR code:', err);
+            }
+        };
+
+        generateQR();
+    }, [curp]);
 
     return (
         <div className="bg-slate-100 font-display text-slate-900 antialiased min-h-screen flex flex-col">
@@ -156,7 +182,11 @@ function CertificadoContent() {
                                     <div className="absolute -top-2 -right-2 bg-emerald-500 text-white p-0.5 rounded-full shadow-sm">
                                         <span className="material-symbols-outlined text-[10px] block">verified</span>
                                     </div>
-                                    <img alt="QR Code" className="w-20 h-20 rounded-lg mix-blend-multiply" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-FeD243afE-Mn6fTWtmrbqEicFftOwKUHTdllAlXpQemifyWdi-Cu0-mElyCC9Bq0RKdZGnek980syw3kApWn-d4GHgDdtEaXna2Q7RotejykfGl4RatbIGds5jbS2UPRbqxHIFsy7J6eoPRkB2kFej2-iL_u-EOx_KdJGnUpmOoHvbCm0yPBwvnkV7w2e6qL2XaDQeZRLNR_zccnHHqtrN7Aj8NjiRBDfaWHmIfdePZrFSDGHoHu9LYMZBVxnRmpyrKV0aR1nGSp" />
+                                    {qrCodeUrl ? (
+                                        <img alt="QR Code" className="w-20 h-20 rounded-lg" src={qrCodeUrl} />
+                                    ) : (
+                                        <div className="w-20 h-20 bg-slate-100 animate-pulse rounded-lg"></div>
+                                    )}
                                 </div>
                                 <div className="flex-1">
                                     <h4 className="text-[10px] font-black uppercase text-slate-800 tracking-widest mb-1 flex items-center gap-1"><span className="material-symbols-outlined text-[12px] text-emerald-500">lock</span> Verificación Criptográfica</h4>

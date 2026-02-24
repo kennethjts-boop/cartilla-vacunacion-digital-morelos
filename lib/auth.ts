@@ -20,15 +20,6 @@ export async function decrypt(input: string): Promise<JWTPayload> {
 }
 
 export async function getSession() {
-    if (process.env.NODE_ENV !== 'production') {
-        return {
-            user: {
-                id: '123',
-                name: 'TEST ADMIN',
-                role: 'ADMIN_ESTATAL',
-            }
-        } as any;
-    }
     const cookieStore = await cookies()
     const session = cookieStore.get('session')?.value
     if (!session) return null

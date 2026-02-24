@@ -1,16 +1,55 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ExportModal from '@/app/components/dashboard/ExportModal';
-
 import Link from 'next/link';
+import { getInventory } from '@/app/actions/inventory';
 
 export default function InventarioPage() {
     const [isExportOpen, setIsExportOpen] = useState(false);
-    const [exportType, setExportType] = useState<'excel'|'pdf'|'csv'>('excel');
+    const [exportType, setExportType] = useState<'excel' | 'pdf' | 'csv'>('excel');
+    const [inventory, setInventory] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
 
-    const handleExport = (type: 'excel'|'pdf'|'csv') => {
+    useEffect(() => {
+        async function loadInventory() {
+            const res = await getInventory();
+            if (res.success) {
+                setInventory(res.data || []);
+            }
+            setLoading(false);
+        }
+        loadInventory();
+    }, []);
+
+    const handleExport = (type: 'excel' | 'pdf' | 'csv') => {
         setExportType(type);
         setIsExportOpen(true);
+    };
+
+    // Calculate metrics
+    const totalDoses = inventory.reduce((acc, curr) => acc + curr.stock, 0);
+    const criticalLots = inventory.filter(i => i.status === 'CRITICO').length;
+    const nearExpiry = inventory.filter(i => {
+        const expiry = new Date(i.expirationDate);
+        const today = new Date();
+        const diffTime = expiry.getTime() - today.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays > 0 && diffDays < 90; // Less than 3 months
+    }).length;
+
+    const filteredInventory = inventory.filter(i =>
+        i.vaccine.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        i.lotNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        i.healthCenter.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const formatDate = (date: Date | string) => {
+        return new Date(date).toLocaleDateString('es-MX', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
     };
 
     return (
@@ -42,9 +81,9 @@ export default function InventarioPage() {
                 <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-start justify-between">
                     <div>
                         <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total de Dosis</p>
-                        <h3 className="text-3xl font-black mt-2 text-slate-900 dark:text-white">124,500</h3>
+                        <h3 className="text-3xl font-black mt-2 text-slate-900 dark:text-white">{loading ? '...' : totalDoses.toLocaleString()}</h3>
                         <p className="text-xs text-emerald-600 font-bold mt-2 flex items-center gap-1">
-                            <span className="material-symbols-outlined text-xs">trending_up</span> +2.4% vs mes anterior
+                            <span className="material-symbols-outlined text-xs">trending_up</span> Actualizado ahora
                         </p>
                     </div>
                     <div className="bg-primary/10 p-3 rounded-lg flex items-center justify-center">
@@ -54,9 +93,9 @@ export default function InventarioPage() {
                 <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-start justify-between">
                     <div>
                         <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Lotes Críticos</p>
-                        <h3 className="text-3xl font-black mt-2 text-red-600">12</h3>
+                        <h3 className="text-3xl font-black mt-2 text-red-600">{loading ? '...' : criticalLots}</h3>
                         <p className="text-xs text-red-500 font-bold mt-2 flex items-center gap-1">
-                            <span className="material-symbols-outlined text-xs">warning</span> Atención inmediata
+                            <span className="material-symbols-outlined text-xs">warning</span> {criticalLots > 0 ? 'Atención inmediata' : 'Sin alertas'}
                         </p>
                     </div>
                     <div className="bg-red-50 p-3 rounded-lg dark:bg-red-900/20 flex items-center justify-center">
@@ -66,9 +105,9 @@ export default function InventarioPage() {
                 <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-start justify-between">
                     <div>
                         <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Próximas a Vencer</p>
-                        <h3 className="text-3xl font-black mt-2 text-amber-600">4,200</h3>
+                        <h3 className="text-3xl font-black mt-2 text-amber-600">{loading ? '...' : nearExpiry}</h3>
                         <p className="text-xs text-amber-500 font-bold mt-2 flex items-center gap-1">
-                            <span className="material-symbols-outlined text-xs">timer</span> Programar distribución
+                            <span className="material-symbols-outlined text-xs">timer</span> {'<'} 90 días
                         </p>
                     </div>
                     <div className="bg-amber-50 p-3 rounded-lg dark:bg-amber-900/20 flex items-center justify-center">
@@ -77,10 +116,10 @@ export default function InventarioPage() {
                 </div>
                 <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-start justify-between">
                     <div>
-                        <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">En Tránsito</p>
-                        <h3 className="text-3xl font-black mt-2 text-slate-900 dark:text-white">8,500</h3>
+                        <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Lotes Totales</p>
+                        <h3 className="text-3xl font-black mt-2 text-slate-900 dark:text-white">{loading ? '...' : inventory.length}</h3>
                         <p className="text-xs text-slate-500 font-bold mt-2 flex items-center gap-1">
-                            <span className="material-symbols-outlined text-xs">local_shipping</span> 4 envíos activos
+                            <span className="material-symbols-outlined text-xs">inventory_2</span> Registrados
                         </p>
                     </div>
                     <div className="bg-slate-100 p-3 rounded-lg dark:bg-slate-800 flex items-center justify-center">
@@ -96,11 +135,14 @@ export default function InventarioPage() {
                     <div className="flex items-center gap-2">
                         <div className="relative">
                             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-                            <input type="text" placeholder="Filtrar lote..." className="pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary w-full sm:w-auto" />
+                            <input
+                                type="text"
+                                placeholder="Filtrar lote, vacuna o centro..."
+                                className="pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary w-full sm:w-auto"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
                         </div>
-                        <button className="p-2 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-slate-500 transition-colors">
-                            <span className="material-symbols-outlined">filter_list</span>
-                        </button>
                     </div>
                 </div>
                 <div className="overflow-x-auto">
@@ -109,155 +151,68 @@ export default function InventarioPage() {
                             <tr className="bg-slate-50/80 dark:bg-slate-800/50">
                                 <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Vacuna</th>
                                 <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Centro de Salud / Almacén</th>
-                                <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider relative group">Stock Actual <span className="material-symbols-outlined text-[10px] inline-block ml-1 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">info</span></th>
+                                <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Stock Actual</th>
                                 <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Vencimiento</th>
                                 <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Estado</th>
                                 <th className="px-6 py-4"></th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                            {/* Row 1 */}
-                            <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0 border border-primary/10">
-                                            <span className="material-symbols-outlined text-lg">science</span>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={6} className="px-6 py-10 text-center text-slate-500">Cargando inventario...</td>
+                                </tr>
+                            ) : filteredInventory.map((item) => (
+                                <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0 border border-primary/10">
+                                                <span className="material-symbols-outlined text-lg">science</span>
+                                            </div>
+                                            <div>
+                                                <p className="font-bold text-slate-900 dark:text-slate-100">{item.vaccine.name}</p>
+                                                <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mt-0.5">LOTE: {item.lotNumber}</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p className="font-bold text-slate-900 dark:text-slate-100">BCG (Tuberculosis)</p>
-                                            <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mt-0.5">LOTE: 549-AXX</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <p className="text-slate-900 dark:text-slate-200 font-medium">Almacén Central Cuernavaca</p>
-                                    <p className="text-[11px] text-slate-500">Jurisdicción I</p>
-                                </td>
-                                <td className="px-6 py-4 font-black text-slate-900 dark:text-white text-lg">25,000 <span className="text-xs font-medium text-slate-400 lowercase">dosis</span></td>
-                                <td className="px-6 py-4">
-                                    <p className="text-slate-700 dark:text-slate-300 font-bold text-sm">12 Dic 2026</p>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-flex px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50">En Stock</span>
-                                </td>
-                                <td className="px-6 py-4 text-right">
-                                    <button className="text-slate-400 hover:text-primary transition-colors p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800 opacity-0 group-hover:opacity-100">
-                                        <span className="material-symbols-outlined">more_vert</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            {/* Row 2 */}
-                            <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-lg bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-600 shrink-0 border border-orange-200 dark:border-orange-800">
-                                            <span className="material-symbols-outlined text-lg">science</span>
-                                        </div>
-                                        <div>
-                                            <p className="font-bold text-slate-900 dark:text-slate-100">Hepatitis B (Adulto)</p>
-                                            <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mt-0.5">LOTE: 921-HBA</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <p className="text-slate-900 dark:text-slate-200 font-medium">Hospital General de Cuautla</p>
-                                    <p className="text-[11px] text-slate-500">Jurisdicción III</p>
-                                </td>
-                                <td className="px-6 py-4 font-black text-slate-900 dark:text-white text-lg">450 <span className="text-xs font-medium text-slate-400 lowercase">dosis</span></td>
-                                <td className="px-6 py-4">
-                                    <p className="text-slate-700 dark:text-slate-300 font-bold text-sm">15 Abr 2026</p>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-flex px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50">Stock Bajo</span>
-                                </td>
-                                <td className="px-6 py-4 text-right">
-                                    <button className="text-slate-400 hover:text-primary transition-colors p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800 opacity-0 group-hover:opacity-100">
-                                        <span className="material-symbols-outlined">more_vert</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            {/* Row 3 */}
-                            <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group bg-red-50/50 dark:bg-red-900/10">
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-900/40 flex items-center justify-center text-red-600 shrink-0 border border-red-200 dark:border-red-800/50">
-                                            <span className="material-symbols-outlined text-lg">coronavirus</span>
-                                        </div>
-                                        <div>
-                                            <p className="font-bold text-slate-900 dark:text-slate-100">Influenza Estacional</p>
-                                            <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mt-0.5">LOTE: 112-INF</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <p className="text-slate-900 dark:text-slate-200 font-medium">Centro de Salud Jojutla</p>
-                                    <p className="text-[11px] text-slate-500">Jurisdicción II</p>
-                                </td>
-                                <td className="px-6 py-4 font-black text-red-600 dark:text-red-400 text-lg">12 <span className="text-xs font-medium text-slate-400 lowercase">dosis</span></td>
-                                <td className="px-6 py-4">
-                                    <p className="text-red-600 dark:text-red-400 font-bold text-sm">30 May 2026</p>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-flex px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300 border border-red-200 dark:border-red-800/50 flex items-center gap-1 w-max"><span className="material-symbols-outlined text-[10px]">emergency</span> Crítico</span>
-                                </td>
-                                <td className="px-6 py-4 text-right">
-                                    <button className="text-slate-400 hover:text-primary transition-colors p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800 opacity-0 group-hover:opacity-100">
-                                        <span className="material-symbols-outlined">more_vert</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            {/* Row 4 */}
-                            <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 shrink-0 border border-blue-200 dark:border-blue-800/50">
-                                            <span className="material-symbols-outlined text-lg">child_care</span>
-                                        </div>
-                                        <div>
-                                            <p className="font-bold text-slate-900 dark:text-slate-100">Rotavirus</p>
-                                            <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mt-0.5">LOTE: 443-RTV</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <p className="text-slate-900 dark:text-slate-200 font-medium">Centro de Salud Temixco</p>
-                                    <p className="text-[11px] text-slate-500">Jurisdicción I</p>
-                                </td>
-                                <td className="px-6 py-4 font-black text-slate-900 dark:text-white text-lg">1,200 <span className="text-xs font-medium text-slate-400 lowercase">dosis</span></td>
-                                <td className="px-6 py-4">
-                                    <p className="text-slate-700 dark:text-slate-300 font-bold text-sm">18 Jul 2026</p>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-flex px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50">En Stock</span>
-                                </td>
-                                <td className="px-6 py-4 text-right">
-                                    <button className="text-slate-400 hover:text-primary transition-colors p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800 opacity-0 group-hover:opacity-100">
-                                        <span className="material-symbols-outlined">more_vert</span>
-                                    </button>
-                                </td>
-                            </tr>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <p className="text-slate-900 dark:text-slate-200 font-medium">{item.healthCenter.name}</p>
+                                        <p className="text-[11px] text-slate-500">{item.healthCenter.municipality}</p>
+                                    </td>
+                                    <td className="px-6 py-4 font-black text-slate-900 dark:text-white text-lg">{item.stock.toLocaleString()} <span className="text-xs font-medium text-slate-400 lowercase">dosis</span></td>
+                                    <td className="px-6 py-4">
+                                        <p className="text-slate-700 dark:text-slate-300 font-bold text-sm">{formatDate(item.expirationDate)}</p>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span className={`inline-flex px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border ${item.status === 'EN_STOCK' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/50' :
+                                            item.status === 'STOCK_BAJO' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800/50' :
+                                                'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800/50'
+                                            }`}>
+                                            {item.status.replace('_', ' ')}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                        <button className="text-slate-400 hover:text-primary transition-colors p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800 opacity-0 group-hover:opacity-100">
+                                            <span className="material-symbols-outlined">more_vert</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            {!loading && filteredInventory.length === 0 && (
+                                <tr>
+                                    <td colSpan={6} className="px-6 py-10 text-center text-slate-500">No se encontraron registros.</td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>
-                <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Mostrando 4 de 142 registros</p>
-                    <div className="flex items-center gap-1">
-                        <button className="px-3 py-1.5 border border-slate-200 dark:border-slate-700 rounded-md text-sm font-bold text-slate-500 hover:bg-white dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors cursor-not-allowed opacity-50">Ant</button>
-                        <button className="px-3 py-1.5 bg-primary text-white rounded-md text-sm font-bold shadow shadow-primary/20">1</button>
-                        <button className="px-3 py-1.5 border border-slate-200 dark:border-slate-700 rounded-md text-sm font-bold text-slate-500 hover:bg-white dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">2</button>
-                        <button className="px-3 py-1.5 border border-slate-200 dark:border-slate-700 rounded-md text-sm font-bold text-slate-500 hover:bg-white dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">3</button>
-                        <span className="text-slate-400 px-1">...</span>
-                        <button className="px-3 py-1.5 border border-slate-200 dark:border-slate-700 rounded-md text-sm font-bold text-slate-500 hover:bg-white dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Sig</button>
-                    </div>
-                </div>
             </div>
-        
-            <ExportModal 
-                isOpen={isExportOpen} 
-                onClose={() => setIsExportOpen(false)} 
+
+            <ExportModal
+                isOpen={isExportOpen}
+                onClose={() => setIsExportOpen(false)}
                 fileType={exportType}
             />
         </div>
-
     );
 }

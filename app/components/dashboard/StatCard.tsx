@@ -7,6 +7,7 @@ interface StatCardProps {
     colorClass: string;
     progressClass?: string;
     progressValue: number;
+    onClick?: () => void;
 }
 
 export function StatCard({
@@ -18,17 +19,21 @@ export function StatCard({
     colorClass,
     progressClass = "bg-primary",
     progressValue,
+    onClick,
 }: StatCardProps) {
     return (
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:shadow-md">
+        <div
+            onClick={onClick}
+            className={`bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all ${onClick ? 'cursor-pointer hover:shadow-lg hover:border-primary/30 group' : ''}`}
+        >
             <div className="flex items-center justify-between mb-4">
                 <div className={`p-2 rounded-lg ${colorClass}`}>
                     <span className="material-symbols-outlined">{icon}</span>
                 </div>
                 <span
                     className={`text-xs font-bold px-2 py-1 rounded ${percentageChangePositive
-                            ? "text-green-600 bg-green-50 dark:bg-green-900/20"
-                            : "text-amber-600 bg-amber-50 dark:bg-amber-900/20" // Or red depending on context
+                        ? "text-green-600 bg-green-50 dark:bg-green-900/20"
+                        : "text-amber-600 bg-amber-50 dark:bg-amber-900/20" // Or red depending on context
                         }`}
                 >
                     {percentageChangePositive ? "+" : ""}

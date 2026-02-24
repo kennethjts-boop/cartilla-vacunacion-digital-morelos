@@ -8,64 +8,139 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
-  role      String   @default("ADMIN_ESTATAL") // e.g., ADMIN_ESTATAL, MEDICO, PADRE
+  id           String   @id @default(uuid())
+  email        String   @unique
+  password     String
+  name         String
+  role         String   @default("ADMIN_ESTATAL")
   jurisdiction String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Patient {
-  id             String   @id @default(uuid())
-  curp           String   @unique
+  id             String          @id @default(uuid())
+  curp           String          @unique
   firstName      String
   lastName       String
   dateOfBirth    DateTime
   gender         String
   municipality   String
   healthCenterId String?
-  healthCenter   HealthCenter? @relation(fields: [healthCenterId], references: [id])
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  healthCenter   UnidadSalud?    @relation(fields: [healthCenterId], references: [id])
   vaccineRecords VaccineRecord[]
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  appointments   Appointment[]
 }
 
 model Vaccine {
-  id                   String   @id @default(uuid())
-  name                 String   @unique // e.g., "BCG (Tuberculosis)", "Pentavalente Acelular"
+  id                   String          @id @default(uuid())
+  name                 String          @unique
   dosesRequired        Int
   recommendedAgeMonths Int
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
   records              VaccineRecord[]
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  inventory            Inventory[]
+  appointments         Appointment[]
 }
 
 model VaccineRecord {
-  id             String   @id @default(uuid())
+  id               String       @id @default(uuid())
+  patientId        String
+  vaccineId        String
+  healthCenterId   String
+  dateAdministered DateTime?
+  status           String
+  lotNumber        String?
+  doseName         String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  healthCenter     UnidadSalud  @relation(fields: [healthCenterId], references: [id])
+  patient          Patient      @relation(fields: [patientId], references: [id])
+  vaccine          Vaccine      @relation(fields: [vaccineId], references: [id])
+}
+
+model Inventory {
+  id             String       @id @default(uuid())
+  vaccineId      String
+  healthCenterId String
+  stock          Int
+  lotNumber      String
+  expirationDate DateTime
+  status         String       @default("EN_STOCK")
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  healthCenter     UnidadSalud  @relation(fields: [healthCenterId], references: [id])
+  vaccine        Vaccine      @relation(fields: [vaccineId], references: [id])
+}
+
+model Appointment {
+  id             String       @id @default(uuid())
   patientId      String
   vaccineId      String
   healthCenterId String
-  dateAdministered DateTime?
-  status         String   // e.g., "COMPLETADO", "PENDIENTE", "ATRASADO"
-  
-  patient        Patient  @relation(fields: [patientId], references: [id])
-  vaccine        Vaccine  @relation(fields: [vaccineId], references: [id])
-  healthCenter   HealthCenter @relation(fields: [healthCenterId], references: [id])
-  
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  date           DateTime
+  status         String       @default("PENDIENTE")
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  healthCenter     UnidadSalud  @relation(fields: [healthCenterId], references: [id])
+  patient          Patient      @relation(fields: [patientId], references: [id])
+  vaccine          Vaccine      @relation(fields: [vaccineId], references: [id])
 }
 
-model HealthCenter {
-  id             String   @id @default(uuid())
-  name           String   // e.g., "Hospital General de Jiutepec", "Centro Salud Cuernavaca Centro"
-  municipality   String
-  jurisdiction   String
-  patients       Patient[]
-  vaccineRecords VaccineRecord[]
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+model Municipio {
+  id                String   @id @default(uuid())
+  cve_ent           String   @default("17")
+  cve_mun           String   // INEGI 3 dígitos
+  nombre            String
+  nombre_normalizado String
+  activo            Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  unidades          UnidadSalud[]
+
+  @@unique([cve_ent, cve_mun])
+}
+
+enum Institucion {
+  SSA
+  IMSS
+  ISSSTE
+  IMSS_BIENESTAR
+  OTRA
+}
+
+model UnidadSalud {
+  id              String      @id @default(uuid())
+  clues           String?     @unique
+  institucion     Institucion
+  nombre_unidad   String
+  tipo_unidad     String
+  nivel_atencion  String?
+  cve_ent         String      @default("17")
+  cve_mun         String?
+  municipio_texto String
+  localidad       String?
+  direccion       String?
+  cp              String?
+  lat             Decimal?    @db.Decimal(10, 8)
+  lon             Decimal?    @db.Decimal(11, 8)
+  telefono        String?
+  estatus         String?     @default("EN_OPERACION")
+  fuente          String
+  hash_registro   String?     @unique
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  municipioRel    Municipio?  @relation(fields: [cve_ent, cve_mun], references: [cve_ent, cve_mun])
+
+  patients        Patient[]
+  vaccineRecords  VaccineRecord[]
+  inventory       Inventory[]
+  appointments    Appointment[]
+
+  @@unique([institucion, nombre_unidad, direccion, cve_mun], name: "unique_unregistered")
 }

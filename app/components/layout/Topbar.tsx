@@ -1,3 +1,5 @@
+'use client';
+
 interface TopbarProps {
     user?: {
         name: string;
@@ -6,9 +8,30 @@ interface TopbarProps {
     };
 }
 
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function Topbar({ user }: TopbarProps) {
+    const [showNotifications, setShowNotifications] = useState(false);
+    const notificationRef = useRef<HTMLDivElement>(null);
+
+    // Close notification dropdown when clicking outside
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+                setShowNotifications(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const mockNotifications = [
+        { id: 1, text: "Nuevo lote de vacunas Influenza recibido en J1", time: "Hace 5 min", type: "info" },
+        { id: 2, text: "Nivel de stock crítico: BCG en CS Cuernavaca", time: "Hace 12 min", type: "warning" },
+        { id: 3, text: "Nueva cita programada para Juan Pérez", time: "Hace 1 hora", type: "success" },
+    ];
+
     return (
         <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-10 transition-colors">
             <div className="flex items-center gap-4">
@@ -34,10 +57,42 @@ export default function Topbar({ user }: TopbarProps) {
             </div>
 
             <div className="flex items-center gap-4">
-                <button className="relative p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
-                    <span className="material-symbols-outlined">notifications</span>
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
-                </button>
+                <div className="relative" ref={notificationRef}>
+                    <button
+                        onClick={() => setShowNotifications(!showNotifications)}
+                        className="relative p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                    >
+                        <span className="material-symbols-outlined">notifications</span>
+                        <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
+                    </button>
+
+                    {showNotifications && (
+                        <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl z-50 overflow-hidden ring-4 ring-black/5 animate-in fade-in slide-in-from-top-2 duration-200">
+                            <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/30">
+                                <h3 className="text-xs font-black uppercase tracking-widest text-slate-800 dark:text-slate-200">Notificaciones</h3>
+                                <span className="text-[10px] font-bold text-primary px-2 py-0.5 bg-primary/10 rounded-full">3 Nuevas</span>
+                            </div>
+                            <div className="max-h-[300px] overflow-y-auto">
+                                {mockNotifications.map(n => (
+                                    <div key={n.id} className="p-4 border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group">
+                                        <div className="flex gap-3">
+                                            <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${n.type === 'warning' ? 'bg-amber-500' :
+                                                n.type === 'success' ? 'bg-emerald-500' : 'bg-blue-500'
+                                                }`}></div>
+                                            <div>
+                                                <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 leading-snug group-hover:text-primary transition-colors">{n.text}</p>
+                                                <p className="text-[10px] text-slate-400 mt-1 font-medium">{n.time}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <button className="w-full py-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all uppercase tracking-widest">
+                                Ver todas las notificaciones
+                            </button>
+                        </div>
+                    )}
+                </div>
                 <Link href="/perfil" className="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
                     <span className="material-symbols-outlined">settings</span>
                 </Link>

@@ -45,13 +45,17 @@ export default function Sidebar({ role }: SidebarProps) {
                             <span className="material-symbols-outlined text-[20px]">monitoring</span>
                             <span className="text-sm font-medium">Vigilancia</span>
                         </Link>
+                        <Link href="/catalogos" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group-hover:text-primary">
+                            <span className="material-symbols-outlined text-[20px]">dictionary</span>
+                            <span className="text-sm font-medium">Catálogo de Salud</span>
+                        </Link>
                     </>
                 )}
                 {/* Operaciones - Admin y Médicos */}
                 <p className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 mt-6 hidden group-hover:block lg:block">Operaciones</p>
-                <Link href="/registro" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group-hover:text-primary">
+                <Link href="/pacientes/registrar" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group-hover:text-primary">
                     <span className="material-symbols-outlined text-[20px]">how_to_reg</span>
-                    <span className="text-sm font-medium">Registro</span>
+                    <span className="text-sm font-medium">Registro de Pacientes</span>
                 </Link>
                 <Link href="/centros" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group-hover:text-primary">
                     <span className="material-symbols-outlined text-[20px]">local_hospital</span>

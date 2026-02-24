@@ -143,7 +143,7 @@ function LoginForm() {
                         <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 text-center">
                             <p className="text-sm text-slate-500 dark:text-slate-400">
                                 ¿Es tutor y no tiene cuenta?{" "}
-                                <Link href="/registro" className="text-primary font-bold hover:underline">Regístrese aquí</Link>
+                                <a href="/registro" className="text-primary font-bold hover:underline cursor-pointer">Regístrese aquí ahora</a>
                             </p>
                         </div>
                     </div>

@@ -1,5 +1,6 @@
 import { getHealthCenters } from "@/app/actions/registro";
 import Link from "next/link";
+import SafeMap from '@/app/components/dashboard/SafeMap';
 
 export const dynamic = 'force-dynamic';
 
@@ -184,15 +185,23 @@ export default async function CentrosPage() {
                         <h3 className="text-2xl font-black text-white mb-2">Mapa de Cobertura de Centros de Salud</h3>
                         <p className="text-white/70 max-w-lg">Visualice el alcance de la vacunación en los 36 municipios de Morelos. Monitoree áreas con bajo stock o alta demanda en tiempo real.</p>
                         <div className="mt-6 flex flex-wrap justify-center md:justify-start gap-4">
-                            <button className="px-6 py-2 bg-white text-slate-900 font-bold rounded-lg hover:bg-slate-100 transition-colors">Ver Mapa Interactivo</button>
+                            <Link
+                                href="/vigilancia"
+                                className="inline-block px-6 py-2 bg-white text-slate-900 font-bold rounded-lg hover:bg-slate-100 transition-colors cursor-pointer relative z-50 shadow-md"
+                                style={{ display: 'inline-block', minWidth: '180px', textAlign: 'center' }}
+                            >
+                                Ver Mapa Interactivo
+                            </Link>
                         </div>
                     </div>
-                    <div className="w-full md:w-1/3 aspect-video bg-white/5 rounded-xl border border-white/10 flex items-center justify-center overflow-hidden">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                            alt="Heatmap of vaccination coverage in Morelos State"
-                            className="w-full h-full object-cover opacity-50 grayscale hover:grayscale-0 transition-all duration-700"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdvx_AyAaiOsS2qmuGgIW9Yf5oNnJPPrCHvZnXKHpCRI-oZWKuPz5pnK0SDFryHeCzEd-_Mux1m1DmLLrEWRuFkelJv0ne3agqi73iA10xBhx0AetZiQuUtyIAdUg3o67inBhXfNVlvZjQBT3ssFE21zYHPGDgFMN4LBoQ5gFQgKeX4nA5mknrfLrXTLcJtFvvZLxn9PaHXpk_jJUkuSrHcazSR6ZAxMB_2wRBLrtpokL-WLQZwBuzxbmA2Jp8AY44rX-sR8glEUU6"
+                    <div className="w-full md:w-5/12 aspect-video bg-white/5 rounded-xl border border-white/10 overflow-hidden relative shadow-2xl min-h-[300px]">
+                        <SafeMap
+                            zoom={9}
+                            points={[
+                                { lat: 18.92, lng: -99.23, label: 'Capacidad: 85%', risk: 'low' },
+                                { lat: 18.61, lng: -99.22, label: 'Capacidad: 40%', risk: 'medium' },
+                                { lat: 18.81, lng: -98.94, label: 'Capacidad: 15%', risk: 'high' }
+                            ]}
                         />
                     </div>
                 </div>

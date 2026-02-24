@@ -3,6 +3,9 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { renderTableNinos, renderTableAdolescentes, renderTableAdultos, renderTableMayores, renderTableRiesgo } from '@/app/components/dashboard/VaccineTables';
+import { useEffect } from 'react';
+import { getPatientVaccineRecords, getVaccines, registerVaccineApplication } from '@/app/actions/vaccines';
+import { useRouter } from 'next/navigation';
 
 function parseAgeFromCURP(curp: string) {
     if (!curp || curp.length < 18) return { age: 0, ageStr: "0 años", ageGroup: "0-9" };
@@ -47,6 +50,10 @@ function parseAgeFromCURP(curp: string) {
 
 export default function CartillaClient({ role, initialPatient }: any) {
     const [showModal, setShowModal] = useState(false);
+    const [records, setRecords] = useState<any[]>([]);
+    const [availableVaccines, setAvailableVaccines] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
 
     const isTutor = role === 'PADRE';
 
@@ -64,6 +71,40 @@ export default function CartillaClient({ role, initialPatient }: any) {
     ];
 
     const [patient, setPatient] = useState(initialPatient || perfiles[0]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setIsLoading(true);
+            const [vResponse, rResponse] = await Promise.all([
+                getVaccines(),
+                getPatientVaccineRecords(patient.curp) // Note: In this demo CURP is used as lookup if real ID is missing
+            ]);
+
+            if (vResponse.success && vResponse.data) setAvailableVaccines(vResponse.data);
+            if (rResponse.success && rResponse.data) setRecords(rResponse.data);
+            setIsLoading(false);
+        };
+        fetchData();
+    }, [patient.curp]);
+
+    const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setIsLoading(true);
+        const formData = new FormData(e.currentTarget);
+        formData.append('patientId', patient.curp); // Simplified for demo
+        formData.append('healthCenterId', 'hc-123'); // Semi-mocked
+
+        const res = await registerVaccineApplication(formData);
+        if (res.success) {
+            setShowModal(false);
+            // Refresh records
+            const rResponse = await getPatientVaccineRecords(patient.curp);
+            if (rResponse.success && rResponse.data) setRecords(rResponse.data);
+        } else {
+            alert(res.error || 'Error al registrar');
+        }
+        setIsLoading(false);
+    };
 
     const parsedAge = parseAgeFromCURP(patient.curp);
     const displayedAgeStr = patient.ageStr || parsedAge.ageStr; // Fallback to provided ageStr if dynamic parsing is off
@@ -100,7 +141,7 @@ export default function CartillaClient({ role, initialPatient }: any) {
                 <div className="max-w-[1400px] mx-auto space-y-3 lg:space-y-4 flex flex-col min-h-full bg-slate-50/10 rounded-2xl">
                     {/* Breadcrumbs */}
                     <nav className="flex items-center gap-2 text-slate-500 dark:text-slate-400 shrink-0">
-                        <Link href="/registro" className="hover:text-primary font-medium transition-colors text-xs lg:text-sm">Pacientes</Link>
+                        <Link href="/pacientes/registrar" className="hover:text-primary font-medium transition-colors text-xs lg:text-sm">Pacientes</Link>
                         <span className="material-symbols-outlined">chevron_right</span>
                         <span className="text-slate-900 dark:text-slate-100 font-bold text-xs lg:text-sm">{patient.name}</span>
                     </nav>
@@ -160,11 +201,11 @@ export default function CartillaClient({ role, initialPatient }: any) {
                         </div>
 
                         <div className="flex-1 overflow-visible">
-                            {activeGroup === '0-9' && renderTableNinos()}
-                            {activeGroup === '10-19' && renderTableAdolescentes()}
-                            {activeGroup === '20-59' && renderTableAdultos()}
-                            {activeGroup === '60+' && renderTableMayores()}
-                            {activeGroup === 'riesgo' && renderTableRiesgo()}
+                            {activeGroup === '0-9' && renderTableNinos(records)}
+                            {activeGroup === '10-19' && renderTableAdolescentes(records)}
+                            {activeGroup === '20-59' && renderTableAdultos(records)}
+                            {activeGroup === '60+' && renderTableMayores(records)}
+                            {activeGroup === 'riesgo' && renderTableRiesgo(records)}
                         </div>
                     </div>
 
@@ -184,51 +225,59 @@ export default function CartillaClient({ role, initialPatient }: any) {
             {/* Modal de Registro de Vacuna */}
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-lg shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden transform transition-all">
+                    <form onSubmit={handleRegister} className="bg-white dark:bg-slate-900 rounded-2xl max-w-lg shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden transform transition-all w-full">
                         <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/20">
                             <h2 className="font-bold flex items-center gap-2">
                                 <span className="material-symbols-outlined text-primary">vaccines</span>
                                 Registrar Nueva Aplicación
                             </h2>
-                            <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
+                            <button type="button" onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
                                 <span className="material-symbols-outlined">close</span>
                             </button>
                         </div>
                         <div className="p-6 space-y-4">
                             <div>
                                 <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">Vacuna Aplicada</label>
-                                <select className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
-                                    <option>Seleccione vacuna administrada...</option>
-                                    <option>Hexavalente (Refuerzo)</option>
-                                    <option>SABIN (Adicional)</option>
-                                    <option>Influenza (Anual)</option>
+                                <select
+                                    name="vaccineId"
+                                    required
+                                    className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none w-full"
+                                >
+                                    <option value="">Seleccione vacuna administrada...</option>
+                                    {availableVaccines.map(v => (
+                                        <option key={v.id} value={v.id}>{v.name}</option>
+                                    ))}
                                 </select>
                             </div>
                             <div>
                                 <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">Lote</label>
-                                <input type="text" placeholder="Ej: HEX-2023-441" className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none uppercase" />
+                                <input name="lotNumber" type="text" placeholder="Ej: HEX-2023-441" className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none uppercase w-full" />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">Fecha de Aplicación</label>
-                                    <input type="date" className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none" defaultValue={new Date().toISOString().split('T')[0]} />
+                                    <input name="dateAdministered" type="date" required className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none w-full" defaultValue={new Date().toISOString().split('T')[0]} />
                                 </div>
                                 <div>
                                     <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">Centro Regulador</label>
-                                    <input type="text" disabled defaultValue="Jurisdicción Morelos" className="bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-slate-500 cursor-not-allowed" />
+                                    <input type="text" disabled defaultValue="Jurisdicción Morelos" className="bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-slate-500 cursor-not-allowed w-full" />
                                 </div>
                             </div>
                         </div>
                         <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3 bg-slate-50 dark:bg-slate-800/50">
-                            <button onClick={() => setShowModal(false)} className="px-5 py-2.5 font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 border border-slate-200 rounded-lg bg-white dark:bg-slate-900">
+                            <button type="button" onClick={() => setShowModal(false)} className="px-5 py-2.5 font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 border border-slate-200 rounded-lg bg-white dark:bg-slate-900">
                                 Cancelar
                             </button>
-                            <button onClick={() => setShowModal(false)} className="px-5 py-2.5 font-bold text-white bg-primary hover:bg-opacity-90 rounded-lg flex items-center gap-2 shadow-sm shadow-primary/20 transition-all">
-                                <span className="material-symbols-outlined">save</span>
-                                Guardar Registro
+                            <button
+                                type="submit"
+                                disabled={isLoading}
+                                className="px-5 py-2.5 font-bold text-white bg-primary hover:bg-opacity-90 rounded-lg flex items-center gap-2 shadow-sm shadow-primary/20 transition-all disabled:opacity-50"
+                            >
+                                <span className="material-symbols-outlined">{isLoading ? 'hourglass_empty' : 'save'}</span>
+                                {isLoading ? 'Guardando...' : 'Guardar Registro'}
                             </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             )}
         </div>
