@@ -65,7 +65,9 @@ export async function getHealthCenters(municipio?: string) {
             data: centers.map(c => ({
                 id: c.id,
                 name: c.nombre_unidad,
-                municipality: c.municipio_texto
+                municipality: c.municipio_texto,
+                institucion: c.institucion,
+                tipo: c.tipo_unidad
             }))
         }
     } catch (error) {

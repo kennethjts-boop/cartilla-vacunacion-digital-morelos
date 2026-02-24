@@ -61,7 +61,7 @@ export default async function CentrosPage() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                                    {centros.map((centro: { id: string; name: string; municipality: string; jurisdiction: string }, index: number) => (
+                                    {centros.map((centro: any, index: number) => (
                                         <tr key={centro.id} className={`hover:bg-primary/5 transition-colors cursor-pointer group ${index === 0 ? 'bg-primary/10 border-l-4 border-primary' : 'border-l-4 border-transparent'}`}>
                                             <td className="px-6 py-5">
                                                 <div className="flex items-center gap-3">
@@ -70,12 +70,17 @@ export default async function CentrosPage() {
                                                     </div>
                                                     <div>
                                                         <p className="text-sm font-bold text-slate-900 dark:text-white">{centro.name}</p>
-                                                        <p className="text-xs text-slate-500 capitalize">Mpio: {centro.municipality}</p>
+                                                        <p className="text-[10px] text-slate-500 font-medium uppercase mt-0.5">{centro.tipo}</p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-5">
-                                                <span className="text-xs font-medium px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">Jurisdicción {centro.jurisdiction}</span>
+                                                <span className={`px-2 py-0.5 rounded text-[10px] font-black tracking-widest uppercase ${centro.institucion === 'IMSS' ? 'bg-emerald-100 text-emerald-800' :
+                                                        centro.institucion === 'ISSSTE' ? 'bg-blue-100 text-blue-800' :
+                                                            'bg-primary/10 text-primary'
+                                                    }`}>
+                                                    {centro.institucion}
+                                                </span>
                                             </td>
                                             <td className="px-6 py-5">
                                                 <p className="text-xs text-slate-600 dark:text-slate-400 max-w-[150px] truncate">{centro.municipality}, Morelos</p>
