@@ -1,16 +1,55 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Institucion } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
+
+const MUNICIPIOS_MORELOS = [
+    { cve_mun: "001", nombre: "Amacuzac" },
+    { cve_mun: "002", nombre: "Atlatlahucan" },
+    { cve_mun: "003", nombre: "Axochiapan" },
+    { cve_mun: "004", nombre: "Ayala" },
+    { cve_mun: "005", nombre: "Coatlán del Río" },
+    { cve_mun: "006", nombre: "Cuautla" },
+    { cve_mun: "007", nombre: "Cuernavaca" },
+    { cve_mun: "008", nombre: "Emiliano Zapata" },
+    { cve_mun: "009", nombre: "Huitzilac" },
+    { cve_mun: "010", nombre: "Jantetelco" },
+    { cve_mun: "011", nombre: "Jiutepec" },
+    { cve_mun: "012", nombre: "Jojutla" },
+    { cve_mun: "013", nombre: "Jonacatepec de Leandro Valle" },
+    { cve_mun: "014", nombre: "Mazatepec" },
+    { cve_mun: "015", nombre: "Miacatlán" },
+    { cve_mun: "016", nombre: "Ocuituco" },
+    { cve_mun: "017", nombre: "Puente de Ixtla" },
+    { cve_mun: "018", nombre: "Temixco" },
+    { cve_mun: "019", nombre: "Tepalcingo" },
+    { cve_mun: "020", nombre: "Tepoztlán" },
+    { cve_mun: "021", nombre: "Tetecala" },
+    { cve_mun: "022", nombre: "Tetela del Volcán" },
+    { cve_mun: "023", nombre: "Tlalnepantla" },
+    { cve_mun: "024", nombre: "Tlaltizapán de Zapata" },
+    { cve_mun: "025", nombre: "Tlaquiltenango" },
+    { cve_mun: "026", nombre: "Tlayacapan" },
+    { cve_mun: "027", nombre: "Totolapan" },
+    { cve_mun: "028", nombre: "Xochitepec" },
+    { cve_mun: "029", nombre: "Yautepec" },
+    { cve_mun: "030", nombre: "Yecapixtla" },
+    { cve_mun: "031", nombre: "Zacatepec" },
+    { cve_mun: "032", nombre: "Zacualpan de Amilpas" },
+    { cve_mun: "033", nombre: "Temoac" },
+    { cve_mun: "034", nombre: "Coatetelco" },
+    { cve_mun: "035", nombre: "Xoxocotla" },
+    { cve_mun: "036", nombre: "Hueyapan" },
+];
 
 async function main() {
     // 1. Crear un Admin (con contraseña hasheada)
     const adminPasswordHtml = 'admin123'
     const passwordHash = await bcrypt.hash(adminPasswordHtml, 10)
 
-    const admin = await prisma.user.upsert({
+    await prisma.user.upsert({
         where: { email: 'admin@salud.morelos.gob.mx' },
-        update: { password: passwordHash }, // Update it if we already ran the seed script
+        update: { password: passwordHash },
         create: {
             email: 'admin@salud.morelos.gob.mx',
             password: passwordHash,
@@ -18,31 +57,23 @@ async function main() {
             name: 'Administrador Estatal',
         },
     })
-    console.log('Admin user created:', admin.email)
 
-    // Insert Health Centers
-    const centros = [
-        { name: 'Hospital General de Jiutepec', municipality: 'Jiutepec', jurisdiction: 'Morelos' },
-        { name: 'Centro Salud Cuernavaca Centro', municipality: 'Cuernavaca', jurisdiction: 'Morelos' },
-        { name: 'Clínica Rural 42 Cuautla', municipality: 'Cuautla', jurisdiction: 'Morelos' },
-        { name: 'CESSA Temixco', municipality: 'Temixco', jurisdiction: 'Morelos' },
-        { name: 'Centro Salud Jojutla', municipality: 'Jojutla', jurisdiction: 'Morelos' },
-    ]
-
-    const healthCenterMap = new Map()
-    for (const hc of centros) {
-        // Assume name is unique enough for demo
-        const existing = await prisma.healthCenter.findFirst({ where: { name: hc.name } })
-        let created
-        if (existing) {
-            created = existing
-        } else {
-            created = await prisma.healthCenter.create({ data: hc })
-        }
-        healthCenterMap.set(hc.name, created.id)
+    // 2. Seed Municipios
+    console.log('Seeding Municipios...')
+    for (const mun of MUNICIPIOS_MORELOS) {
+        await prisma.municipio.upsert({
+            where: { cve_ent_cve_mun: { cve_ent: "17", cve_mun: mun.cve_mun } },
+            update: { nombre: mun.nombre, nombre_normalizado: mun.nombre.toUpperCase() },
+            create: {
+                cve_ent: "17",
+                cve_mun: mun.cve_mun,
+                nombre: mun.nombre,
+                nombre_normalizado: mun.nombre.toUpperCase()
+            },
+        });
     }
 
-    // Insert Vaccines
+    // 3. Insert Vaccines
     const vacunas = [
         { name: 'BCG (Tuberculosis)', dosesRequired: 1, recommendedAgeMonths: 0 },
         { name: 'Hepatitis B', dosesRequired: 3, recommendedAgeMonths: 0 },
@@ -51,60 +82,47 @@ async function main() {
         { name: 'Neumocócica Conjugada', dosesRequired: 3, recommendedAgeMonths: 2 },
     ]
 
-    const vaccineMap = new Map()
     for (const v of vacunas) {
-        const existing = await prisma.vaccine.findFirst({ where: { name: v.name } })
-        let created
-        if (existing) {
-            created = existing
-        } else {
-            created = await prisma.vaccine.create({ data: v })
-        }
-        vaccineMap.set(v.name, created.id)
+        await prisma.vaccine.upsert({
+            where: { name: v.name },
+            update: {},
+            create: v,
+        });
     }
 
-    // Admin user 2
-    await prisma.user.upsert({
-        where: { email: 'admin@saludmorelos.gob.mx' },
-        update: { password: passwordHash },
-        create: {
-            email: 'admin@saludmorelos.gob.mx',
-            password: passwordHash,
-            name: 'Admin Estatal (Secundario)',
-            role: 'ADMIN_ESTATAL',
-            jurisdiction: 'Morelos',
+    // 4. Seed Representative Health Units
+    const healthUnits = [
+        {
+            clues: "MSSSA000632",
+            institucion: Institucion.SSA,
+            nombre_unidad: "HOSPITAL GENERAL CUERNAVACA",
+            tipo_unidad: "HOSPITAL GENERAL",
+            cve_mun: "007",
+            direccion: "AV. DOMINGO DIEZ S/N COL. LOMAS DE LA SELVA",
+            municipio_texto: "Cuernavaca",
+            fuente: "CLUES"
+        },
+        {
+            clues: "MSSSA001402",
+            institucion: Institucion.SSA,
+            nombre_unidad: "CENTRO DE SALUD JIUTEPEC",
+            tipo_unidad: "CENTRO DE SALUD",
+            cve_mun: "011",
+            direccion: "AV. INSURGENTES S/N",
+            municipio_texto: "Jiutepec",
+            fuente: "CLUES"
         }
-    })
+    ];
 
-    // Médico user
-    await prisma.user.upsert({
-        where: { email: 'medico@salud.morelos.gob.mx' },
-        update: { password: passwordHash },
-        create: {
-            email: 'medico@salud.morelos.gob.mx',
-            password: passwordHash,
-            name: 'Dra. Elena Ramírez',
-            role: 'MEDICO',
-            jurisdiction: 'Cuernavaca',
-        }
-    })
+    for (const unit of healthUnits) {
+        await prisma.unidadSalud.upsert({
+            where: { clues: unit.clues },
+            update: unit,
+            create: unit as any
+        });
+    }
 
-    // Tutor user
-    await prisma.user.upsert({
-        where: { email: 'tutor@ejemplo.com' },
-        update: { password: passwordHash },
-        create: {
-            email: 'tutor@ejemplo.com',
-            password: passwordHash,
-            name: 'Juan Pérez',
-            role: 'TUTOR',
-        }
-    })
-
-    // Los catalogos, configuraciones y usuarios base han sido creados.
-    // NOTA PARA PRODUCCION: Se han limpiado los pacientes dummy (pruebas) 
-    // para que la base de datos nazca completamente limpia al salir a red, 
-    // pero lista para recibir registros reales a traves del dashboard.
+    console.log('Seed completed successfully.')
 }
 
 main()
