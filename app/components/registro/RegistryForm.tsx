@@ -9,9 +9,29 @@ type HealthCenterItem = {
     municipality: string;
 }
 
-export default function RegistryForm({ healthCenters }: { healthCenters: HealthCenterItem[] }) {
+export default function RegistryForm({
+    healthCenters: initialHealthCenters,
+    municipios
+}: {
+    healthCenters: HealthCenterItem[],
+    municipios: any[]
+}) {
     const [status, setStatus] = useState<{ type: 'idle' | 'success' | 'error', message: string }>({ type: 'idle', message: '' })
     const [isPending, setIsPending] = useState(false)
+    const [selectedMunicipio, setSelectedMunicipio] = useState('')
+    const [filteredCenters, setFilteredCenters] = useState(initialHealthCenters)
+
+    const handleMunicipioChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = e.target.value
+        setSelectedMunicipio(value)
+        if (!value) {
+            setFilteredCenters(initialHealthCenters)
+        } else {
+            // In a more complex app, we'd fetch this from the API
+            // but for now we filter the initial list if possible or just show all
+            setFilteredCenters(initialHealthCenters.filter(c => c.municipality === value))
+        }
+    }
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault()
@@ -23,7 +43,8 @@ export default function RegistryForm({ healthCenters }: { healthCenters: HealthC
 
         if (response.success) {
             setStatus({ type: 'success', message: response.message || '' })
-                // Reset form
+            setSelectedMunicipio('')
+            setFilteredCenters(initialHealthCenters)
                 ; (event.target as HTMLFormElement).reset()
         } else {
             setStatus({ type: 'error', message: response.error || 'Unknown error' })
@@ -33,6 +54,7 @@ export default function RegistryForm({ healthCenters }: { healthCenters: HealthC
 
     return (
         <form onSubmit={handleSubmit} className="space-y-8 bg-white dark:bg-slate-900 p-8 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+            {/* ... Alerts ... */}
             {status.type === 'success' && (
                 <div className="p-4 bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300 rounded-lg border border-green-200 dark:border-green-800 font-bold">
                     {status.message}
@@ -44,7 +66,7 @@ export default function RegistryForm({ healthCenters }: { healthCenters: HealthC
                 </div>
             )}
 
-            {/* Section 1: Identificación y Datos Personales */}
+            {/* Section 1: Identificación */}
             <section>
                 <div className="flex items-center gap-2 mb-6 pb-2 border-b border-slate-100 dark:border-slate-800">
                     <span className="material-symbols-outlined text-primary">person_search</span>
@@ -65,7 +87,6 @@ export default function RegistryForm({ healthCenters }: { healthCenters: HealthC
                                 Validar
                             </button>
                         </div>
-                        <p className="mt-1.5 text-xs text-slate-500 italic">La validación se realiza directamente con el registro nacional de población.</p>
                     </div>
 
                     <div className="md:col-span-2">
@@ -94,7 +115,7 @@ export default function RegistryForm({ healthCenters }: { healthCenters: HealthC
                 </div>
             </section>
 
-            {/* Section 2: Ubicación y Unidad de Salud */}
+            {/* Section 2: Ubicación */}
             <section>
                 <div className="flex items-center gap-2 mb-6 pb-2 border-b border-slate-100 dark:border-slate-800">
                     <span className="material-symbols-outlined text-primary">location_on</span>
@@ -108,33 +129,39 @@ export default function RegistryForm({ healthCenters }: { healthCenters: HealthC
 
                     <div>
                         <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Municipio *</label>
-                        <select name="municipality" required className="block w-full px-3 py-3 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary text-sm">
+                        <select
+                            name="municipality"
+                            required
+                            defaultValue={selectedMunicipio}
+                            onChange={handleMunicipioChange}
+                            className="block w-full px-3 py-3 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary text-sm"
+                        >
                             <option value="">Seleccione un municipio</option>
-                            <option value="Cuernavaca">Cuernavaca</option>
-                            <option value="Jiutepec">Jiutepec</option>
-                            <option value="Cuautla">Cuautla</option>
-                            <option value="Temixco">Temixco</option>
+                            {municipios.map(m => (
+                                <option key={m.cve_mun} value={m.nombre}>{m.nombre}</option>
+                            ))}
                         </select>
                     </div>
 
                     <div className="md:col-span-2">
                         <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Centro de Salud Asignado *</label>
                         <select name="healthCenterId" required className="block w-full px-3 py-3 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary text-sm">
-                            <option value="">Seleccione la unidad médica más cercana</option>
-                            {healthCenters.map(hc => (
-                                <option key={hc.id} value={hc.id}>{hc.name} - {hc.municipality}</option>
+                            <option value="">Seleccione la unidad médica</option>
+                            {filteredCenters.map(hc => (
+                                <option key={hc.id} value={hc.id}>{hc.name}</option>
                             ))}
                         </select>
+                        <p className="mt-1.5 text-xs text-slate-500">Solo se muestran unidades del municipio seleccionado.</p>
                     </div>
                 </div>
             </section>
 
-            {/* Form Actions */}
+            {/* Actions */}
             <div className="pt-8 flex flex-col sm:flex-row items-center justify-end gap-4 border-t border-slate-100 dark:border-slate-800">
                 <button className="w-full sm:w-auto px-8 py-3 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50" type="button" disabled={isPending}>
                     Cancelar
                 </button>
-                <button className="w-full sm:w-auto px-10 py-3 bg-primary text-white font-bold rounded-lg hover:bg-opacity-90 transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50" type="submit" disabled={isPending}>
+                <button className="w-full sm:w-auto px-10 py-3 bg-primary text-white font-bold rounded-lg hover:bg-opacity-90 transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50" type="submit" disabled={isPending}>
                     <span className="material-symbols-outlined">
                         {isPending ? 'sync' : 'app_registration'}
                     </span>

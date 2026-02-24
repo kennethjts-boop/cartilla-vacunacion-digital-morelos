@@ -1,13 +1,18 @@
-import { getHealthCenters } from "@/app/actions/registro";
+import { getHealthCenters, getMunicipios } from "@/app/actions/registro";
 import RegistryForm from "@/app/components/registro/RegistryForm";
 
 export default async function RegistroPage() {
-    const response = await getHealthCenters()
-    const healthCenters = response.success ? response.data || [] : []
+    const [hcRes, munRes] = await Promise.all([
+        getHealthCenters(),
+        getMunicipios()
+    ])
+
+    const healthCenters = hcRes.success ? hcRes.data || [] : []
+    const municipios = munRes.success ? munRes.data || [] : []
 
     return (
         <main className="max-w-4xl mx-auto py-10 px-4 sm:px-6 w-full">
-            {/* Page Title */}
+            {/* ... Navigation and Title ... */}
             <div className="mb-8">
                 <nav className="flex mb-4 text-sm text-slate-500 gap-2">
                     <span className="hover:text-primary cursor-pointer">Pacientes</span>
@@ -18,7 +23,7 @@ export default async function RegistroPage() {
                 <p className="text-slate-600 dark:text-slate-400 mt-2">Ingrese la información obligatoria para dar de alta al paciente en el sistema estatal de salud.</p>
             </div>
 
-            <RegistryForm healthCenters={healthCenters} />
+            <RegistryForm healthCenters={healthCenters} municipios={municipios} />
 
             {/* Footer Info */}
             <div className="mt-8 text-center text-slate-400 text-xs">

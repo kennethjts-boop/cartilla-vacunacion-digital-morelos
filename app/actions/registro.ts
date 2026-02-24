@@ -50,15 +50,40 @@ export async function registerPatient(formData: FormData) {
     }
 }
 
-export async function getHealthCenters() {
+export async function getHealthCenters(municipio?: string) {
     try {
-        const centers = await prisma.healthCenter.findMany({
-            orderBy: { name: 'asc' }
+        const where: any = {};
+        if (municipio) where.cve_mun = municipio;
+
+        const centers = await prisma.unidadSalud.findMany({
+            where,
+            orderBy: { nombre_unidad: 'asc' }
         })
-        return { success: true, data: centers }
+        // Transform for UI compatibility
+        return {
+            success: true,
+            data: centers.map(c => ({
+                id: c.id,
+                name: c.nombre_unidad,
+                municipality: c.municipio_texto
+            }))
+        }
     } catch (error) {
         console.error("Error fetching health centers:", error)
         return { success: false, error: 'No se pudieron cargar los centros de salud' }
+    }
+}
+
+export async function getMunicipios() {
+    try {
+        const municipios = await prisma.municipio.findMany({
+            where: { activo: true },
+            orderBy: { nombre: 'asc' }
+        })
+        return { success: true, data: municipios }
+    } catch (error) {
+        console.error("Error fetching municipios:", error)
+        return { success: false, error: 'No se pudieron cargar los municipios' }
     }
 }
 
