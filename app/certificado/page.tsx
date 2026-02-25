@@ -59,21 +59,38 @@ function CertificadoContent() {
             <style dangerouslySetInnerHTML={{
                 __html: `
                 @media print {
+                    @page { size: A4 portrait; margin: 0; }
                     .no-print { display: none !important; }
                     body { background-color: white !important; padding: 0 !important; margin: 0 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
                     .a4-page { 
                         box-shadow: none !important; 
                         margin: 0 !important; 
-                        width: 100% !important;
-                        height: 100% !important;
+                        width: 210mm !important;
+                        height: 297mm !important;
+                        max-height: 297mm !important;
                         border: none !important;
+                        overflow: hidden !important;
+                        page-break-after: avoid !important;
+                        page-break-inside: avoid !important;
                     }
+                    /* Force compactness on print */
+                    .print-compact .p-4 { padding: 0.5rem !important; }
+                    .print-compact .p-5 { padding: 0.5rem !important; }
+                    .print-compact .p-3 { padding: 0.25rem !important; }
+                    .print-compact .px-12 { padding-left: 2rem !important; padding-right: 2rem !important; }
+                    .print-compact .py-14 { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
+                    .print-compact .mb-8 { margin-bottom: 1rem !important; }
+                    .print-compact .gap-4 { gap: 0.5rem !important; }
+                    .print-compact .text-sm { font-size: 0.75rem !important; line-height: 1rem !important; }
+                    .print-compact .text-xs { font-size: 0.65rem !important; line-height: 0.85rem !important; }
+                    .print-compact .tracking-widest { letter-spacing: 0.05em !important; }
+                    
                     /* Ensure background graphics print */
                     * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }
                 }
                 .a4-page {
                     width: 210mm;
-                    min-height: 297mm;
+                    height: 297mm;
                     margin: 40px auto;
                     background: white;
                     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -98,7 +115,7 @@ function CertificadoContent() {
                     {/* Left Decorative Bar */}
                     <div className="absolute left-0 top-0 bottom-0 w-3 bg-gradient-to-b from-[#066046] via-emerald-500 to-[#066046]"></div>
 
-                    <div className="px-12 py-14 flex-1 flex flex-col relative z-10 w-full">
+                    <div className="px-12 py-14 flex-1 flex flex-col relative z-10 w-full print-compact">
                         {/* Header Section */}
                         <header className="flex justify-between items-start mb-8">
                             <div className="flex gap-6 items-center">
@@ -131,18 +148,18 @@ function CertificadoContent() {
                                 <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Datos del Titular</h3>
                             </div>
 
-                            <div className="grid grid-cols-4 gap-4 relative z-10">
-                                <div className="col-span-2 bg-white rounded-2xl p-4 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border border-slate-100/50">
+                            <div className="grid grid-cols-4 gap-4 relative z-10 print:gap-2">
+                                <div className="col-span-2 bg-white rounded-2xl p-4 print:p-2.5 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border border-slate-100/50">
                                     <p className="text-[9px] uppercase font-bold text-slate-400 tracking-widest mb-1 flex items-center gap-1.5"><span className="material-symbols-outlined text-[14px]">badge</span>Nombre Completo</p>
-                                    <p className="text-[15px] font-black text-slate-900">{name}</p>
+                                    <p className="text-[15px] print:text-xs font-black text-slate-900">{name}</p>
                                 </div>
-                                <div className="bg-white rounded-2xl p-4 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border border-slate-100/50">
+                                <div className="bg-white rounded-2xl p-4 print:p-2.5 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border border-slate-100/50">
                                     <p className="text-[9px] uppercase font-bold text-slate-400 tracking-widest mb-1 flex items-center gap-1.5"><span className="material-symbols-outlined text-[14px]">pin</span>CURP</p>
-                                    <p className="text-sm font-bold text-[#066046] font-mono">{curp}</p>
+                                    <p className="text-sm print:text-xs font-bold text-[#066046] font-mono">{curp}</p>
                                 </div>
-                                <div className="bg-white rounded-2xl p-4 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border border-slate-100/50">
+                                <div className="bg-white rounded-2xl p-4 print:p-2.5 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] border border-slate-100/50">
                                     <p className="text-[9px] uppercase font-bold text-slate-400 tracking-widest mb-1 flex items-center gap-1.5"><span className="material-symbols-outlined text-[14px]">cake</span>Nacimiento</p>
-                                    <p className="text-sm font-bold text-slate-800">12 MAY 2022</p>
+                                    <p className="text-sm print:text-xs font-bold text-slate-800">12 MAY 2022</p>
                                 </div>
                             </div>
                         </section>
@@ -166,7 +183,7 @@ function CertificadoContent() {
                             </div>
 
                             {/* Dynamic Table Render */}
-                            <div className="flex-1 flex flex-col pt-2 [&>div]:h-full [&>div>div]:h-full [&>div>div>div:last-child]:flex-1">
+                            <div className="flex-1 flex flex-col pt-2 [&>div]:h-full [&>div>div]:h-full [&>div>div>div:last-child]:flex-1 print:transform print:scale-[0.85] print:origin-top">
                                 {activeGroup === '0-9' && renderTableNinos()}
                                 {activeGroup === '10-19' && renderTableAdolescentes()}
                                 {activeGroup === '20-59' && renderTableAdultos()}
@@ -176,7 +193,7 @@ function CertificadoContent() {
 
                         </section>
                         {/* Footer Section / Security */}
-                        <footer className="mt-6 pt-5 flex justify-between items-end relative z-10">
+                        <footer className="print:mt-0 mt-6 pt-5 print:pt-2 flex justify-between items-end relative z-10 print:transform print:scale-[0.90] print:origin-bottom">
                             <div className="flex-1 flex gap-5 items-center">
                                 <div className="p-1 border border-[#066046]/20 rounded-xl bg-white shadow-sm inline-block shrink-0 relative">
                                     <div className="absolute -top-2 -right-2 bg-emerald-500 text-white p-0.5 rounded-full shadow-sm">
