@@ -246,9 +246,9 @@ export default function VigilanciaPage() {
                             </div>
                         </li>
                     </ul>
-                    <button className="w-full mt-6 bg-white dark:bg-slate-900 border border-primary/20 text-primary py-2.5 rounded-lg text-xs font-black uppercase tracking-wider shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                    <Link href="/manual_de_procedimientos.html" target="_blank" className="w-full mt-6 flex items-center justify-center bg-white dark:bg-slate-900 border border-primary/20 text-primary py-2.5 rounded-lg text-xs font-black uppercase tracking-wider shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                         Manual de Procedimientos
-                    </button>
+                    </Link>
                 </div>
             </div>
         </div>

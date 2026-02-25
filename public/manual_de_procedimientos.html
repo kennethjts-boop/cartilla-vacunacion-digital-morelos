@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manual de Usuario - Cartilla Digital de Vacunación Morelos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#066046",
+                        "background-light": "#f5f8f7",
+                        "background-dark": "#10221d",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 w-full bg-white dark:bg-slate-900 border-b border-primary/10 shadow-sm">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-20">
+<div class="flex items-center gap-4">
+<img alt="Logotipo Oficial Gobierno de Morelos" class="h-12 w-auto object-contain" data-alt="Logotipo oficial del Gobierno del Estado de Morelos" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBth4pYyX8Fk7rEqp1m5_5fdvSGQQ4m9YYbDSKB1mIhYCANdHuPb-q_D2hTaUKY6gxOpVCSUWSNcZqQr-gRz_k8C1jUatbtv7XRNQ5HxJhh3YXqjgkIVtqxLHgQJbk9IOptFHrcpDJYSo4BaPfiA_ySMUi_T-UJSlEbLJyrArDTLvIgtrMPaZbkb9CHrMaLb_h6IxrhynWdj3ZPSQ-iJyjAfKvjni6clQB2UmPO1vXfhWxmgKCHaxqBmm7ZmJwJG2gFKzdyYXbbOvsW"/>
+<div class="hidden md:block h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
+<div class="hidden md:flex flex-col">
+<span class="text-primary font-bold text-lg leading-tight uppercase tracking-tight">Cartilla Digital</span>
+<span class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-widest">Manual para Personal Médico</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-semibold text-primary hover:bg-primary/5 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-xl">help</span>
+                        Soporte Técnico
+                    </button>
+<button class="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg font-bold text-sm hover:bg-primary/90 transition-all shadow-md active:scale-95">
+<span class="material-symbols-outlined text-xl">print</span>
+                        Imprimir Guía
+                    </button>
+</div>
+</div>
+</div>
+</header>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="flex flex-col lg:flex-row gap-8">
+<!-- Sidebar Navigation -->
+<aside class="w-full lg:w-72 flex-shrink-0">
+<nav class="sticky top-28 space-y-1">
+<p class="px-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Contenido del Manual</p>
+<a class="group flex items-center px-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-transparent hover:border-primary/20 transition-all" href="#introduccion">
+<span class="material-symbols-outlined mr-3 text-primary group-hover:scale-110 transition-transform">info</span>
+                        Introducción
+                    </a>
+<a class="group flex items-center px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all mt-1" href="#registro">
+<span class="material-symbols-outlined mr-3 text-slate-400 group-hover:text-primary transition-colors">person_add</span>
+                        Registro de Pacientes
+                    </a>
+<a class="group flex items-center px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all mt-1" href="#aplicacion">
+<span class="material-symbols-outlined mr-3 text-slate-400 group-hover:text-primary transition-colors">syringe</span>
+                        Aplicación de Vacunas
+                    </a>
+<a class="group flex items-center px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all mt-1" href="#citas">
+<span class="material-symbols-outlined mr-3 text-slate-400 group-hover:text-primary transition-colors">calendar_month</span>
+                        Gestión de Citas
+                    </a>
+<a class="group flex items-center px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all mt-1" href="#certificados">
+<span class="material-symbols-outlined mr-3 text-slate-400 group-hover:text-primary transition-colors">verified</span>
+                        Generación de Certificados
+                    </a>
+<div class="mt-8 p-5 bg-primary/5 rounded-xl border border-primary/10">
+<p class="text-xs font-bold text-primary uppercase mb-2">Consejo Profesional</p>
+<p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Asegúrese siempre de verificar la CURP del paciente antes de realizar cualquier registro de dosis.
+                        </p>
+</div>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 space-y-12">
+<!-- Hero Section -->
+<section class="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-sm border border-slate-100 dark:border-slate-700" id="introduccion">
+<div class="flex flex-col md:flex-row gap-8 items-center">
+<div class="flex-1">
+<h1 class="text-3xl font-black text-slate-900 dark:text-white leading-tight mb-4 tracking-tight">
+                                Bienvenido al Sistema de la <span class="text-primary">Cartilla Digital</span>
+</h1>
+<p class="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+                                Esta guía operativa ha sido diseñada para facilitar el trabajo diario del personal de salud en el estado de Morelos. La plataforma permite un seguimiento puntual, seguro y digital del esquema de vacunación de cada ciudadano.
+                            </p>
+<div class="flex gap-3">
+<span class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full uppercase tracking-wider">Versión 2.4.0</span>
+<span class="px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-xs font-bold rounded-full uppercase tracking-wider">Actualizado Oct 2023</span>
+</div>
+</div>
+<div class="w-full md:w-1/3 aspect-square bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl flex items-center justify-center p-6 border border-primary/10">
+<span class="material-symbols-outlined text-primary text-8xl opacity-80">medical_services</span>
+</div>
+</div>
+</section>
+<!-- Section: Registro de Pacientes -->
+<section class="scroll-mt-28" id="registro">
+<div class="flex items-center gap-3 mb-6">
+<div class="size-10 bg-primary rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">person_add</span>
+</div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white">1. Registro y Búsqueda de Pacientes</h2>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<div class="space-y-4">
+<p class="text-slate-600 dark:text-slate-400">
+                                Para iniciar cualquier proceso, primero debe localizar al paciente en la base de datos estatal.
+                            </p>
+<ul class="space-y-3">
+<li class="flex gap-3">
+<span class="size-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0">1</span>
+<p class="text-sm text-slate-700 dark:text-slate-300"><span class="font-bold">Ingrese la CURP:</span> Es el identificador único. Si no la tiene, puede realizar búsqueda por datos generales.</p>
+</li>
+<li class="flex gap-3">
+<span class="size-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0">2</span>
+<p class="text-sm text-slate-700 dark:text-slate-300"><span class="font-bold">Verificar Identidad:</span> Confirme nombre y fecha de nacimiento con el paciente.</p>
+</li>
+<li class="flex gap-3">
+<span class="size-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0">3</span>
+<p class="text-sm text-slate-700 dark:text-slate-300"><span class="font-bold">Nuevo Registro:</span> Si el paciente no existe, haga clic en el botón "Nuevo Paciente" y complete los campos obligatorios.</p>
+</li>
+</ul>
+</div>
+<!-- Mockup Capture -->
+<div class="bg-slate-100 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-inner">
+<div class="bg-white dark:bg-slate-900 rounded-lg shadow-sm overflow-hidden">
+<div class="bg-slate-50 dark:bg-slate-800 px-4 py-2 border-b flex items-center gap-2">
+<div class="flex gap-1.5">
+<div class="size-2 rounded-full bg-red-400"></div>
+<div class="size-2 rounded-full bg-yellow-400"></div>
+<div class="size-2 rounded-full bg-green-400"></div>
+</div>
+<span class="text-[10px] text-slate-400 font-mono">busqueda_pacientes.html</span>
+</div>
+<div class="p-6">
+<div class="w-full h-8 bg-slate-100 dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700 mb-4 flex items-center px-3">
+<span class="material-symbols-outlined text-slate-400 text-sm">search</span>
+<div class="ml-2 w-24 h-2 bg-slate-200 dark:bg-slate-700 rounded"></div>
+</div>
+<div class="space-y-2">
+<div class="w-full h-12 border border-primary/20 bg-primary/5 rounded flex items-center px-3 gap-3">
+<div class="size-6 rounded-full bg-primary/20"></div>
+<div class="flex-1 space-y-1.5">
+<div class="w-2/3 h-2 bg-primary/20 rounded"></div>
+<div class="w-1/3 h-1.5 bg-primary/10 rounded"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p class="text-center text-[10px] text-slate-400 mt-3 italic underline">Interfaz de búsqueda rápida</p>
+</div>
+</div>
+</section>
+<!-- Section: Aplicación de Vacunas -->
+<section class="scroll-mt-28" id="aplicacion">
+<div class="flex items-center gap-3 mb-6">
+<div class="size-10 bg-primary rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">syringe</span>
+</div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white">2. Aplicación de Vacunas</h2>
+</div>
+<div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-700 shadow-sm">
+<div class="p-8">
+<p class="text-slate-600 dark:text-slate-400 mb-8">
+                                Una vez seleccionado el paciente, acceda a su expediente para registrar una nueva dosis aplicada.
+                            </p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="relative p-6 bg-slate-50 dark:bg-slate-900 rounded-xl border-t-4 border-primary">
+<span class="absolute -top-3 left-6 px-2 bg-primary text-white text-[10px] font-bold rounded">PASO 1</span>
+<h4 class="font-bold mb-2">Selección</h4>
+<p class="text-xs text-slate-500 leading-relaxed">Elija el biológico correspondiente del catálogo actualizado por la SSA.</p>
+</div>
+<div class="relative p-6 bg-slate-50 dark:bg-slate-900 rounded-xl border-t-4 border-primary">
+<span class="absolute -top-3 left-6 px-2 bg-primary text-white text-[10px] font-bold rounded">PASO 2</span>
+<h4 class="font-bold mb-2">Lote y Caducidad</h4>
+<p class="text-xs text-slate-500 leading-relaxed">Capture el número de lote y verifique que el biológico sea vigente.</p>
+</div>
+<div class="relative p-6 bg-slate-50 dark:bg-slate-900 rounded-xl border-t-4 border-primary">
+<span class="absolute -top-3 left-6 px-2 bg-primary text-white text-[10px] font-bold rounded">PASO 3</span>
+<h4 class="font-bold mb-2">Confirmación</h4>
+<p class="text-xs text-slate-500 leading-relaxed">Guarde el registro para que se refleje de inmediato en la cartilla digital.</p>
+</div>
+</div>
+</div>
+<div class="bg-slate-50 dark:bg-slate-900/50 p-6 flex items-center justify-between border-t border-slate-100 dark:border-slate-700">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-amber-500">warning</span>
+<p class="text-xs font-medium text-slate-600 dark:text-slate-400">Recuerde que los registros son auditables y permanentes.</p>
+</div>
+<button class="text-xs font-bold text-primary hover:underline">Ver tutorial en video</button>
+</div>
+</div>
+</section>
+<!-- Section: Gestión de Citas -->
+<section class="scroll-mt-28" id="citas">
+<div class="flex items-center gap-3 mb-6">
+<div class="size-10 bg-primary rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">calendar_month</span>
+</div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white">3. Gestión de Citas y Agenda</h2>
+</div>
+<div class="flex flex-col md:flex-row gap-8">
+<div class="flex-1 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+<h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">event_note</span>
+                                Agenda Diaria
+                            </h3>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-100 dark:border-slate-700">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">09:00</div>
+<span class="text-sm font-medium">Paciente #4482 (Refuerzo)</span>
+</div>
+<span class="px-2 py-0.5 bg-green-100 text-green-700 text-[10px] font-bold rounded">PUNTUAL</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-100 dark:border-slate-700">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">10:30</div>
+<span class="text-sm font-medium">Paciente #9210 (Esquema Básico)</span>
+</div>
+<span class="px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-bold rounded">PENDIENTE</span>
+</div>
+</div>
+</div>
+<div class="flex-1 space-y-4">
+<h3 class="font-bold text-slate-900 dark:text-white">Programación Automática</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                                El sistema calcula automáticamente la fecha de la siguiente dosis basándose en los intervalos recomendados por la normativa oficial de salud.
+                            </p>
+<div class="p-4 bg-primary/5 rounded-xl border border-primary/20">
+<p class="text-xs font-semibold text-primary mb-1 italic">Nota del Sistema:</p>
+<p class="text-xs text-slate-600 dark:text-slate-400">Si el paciente presenta reacciones adversas, utilice el módulo de reportes ESAVI disponible en el menú lateral.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Generación de Certificados -->
+<section class="scroll-mt-28" id="certificados">
+<div class="flex items-center gap-3 mb-6">
+<div class="size-10 bg-primary rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">verified</span>
+</div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white">4. Generación de Certificados</h2>
+</div>
+<div class="relative overflow-hidden bg-slate-900 rounded-2xl p-8 text-white">
+<!-- Abstract pattern -->
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.2) 1px, transparent 0); background-size: 24px 24px;"></div>
+<div class="relative z-10 flex flex-col md:flex-row items-center gap-8">
+<div class="flex-1">
+<h3 class="text-xl font-bold mb-3">Documento Oficial con Validez QR</h3>
+<p class="text-slate-400 text-sm leading-relaxed mb-6">
+                                    Al finalizar el esquema o a petición del paciente, podrá emitir el Certificado Digital. Este documento incluye un código QR único para validación institucional inmediata.
+                                </p>
+<div class="flex flex-wrap gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<span class="text-xs font-medium">Exportar PDF</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<span class="text-xs font-medium">Envío por Email</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<span class="text-xs font-medium">Impresión Láser</span>
+</div>
+</div>
+</div>
+<div class="w-40 h-52 bg-white rounded shadow-2xl flex flex-col p-3 shrink-0 rotate-3">
+<div class="h-4 w-2/3 bg-slate-200 rounded mb-2"></div>
+<div class="h-2 w-full bg-slate-100 rounded mb-1"></div>
+<div class="h-2 w-full bg-slate-100 rounded mb-4"></div>
+<div class="grid grid-cols-2 gap-2 mb-4">
+<div class="h-10 bg-slate-50 border border-slate-100 rounded"></div>
+<div class="h-10 bg-slate-50 border border-slate-100 rounded"></div>
+</div>
+<div class="mt-auto flex justify-end">
+<div class="size-10 bg-slate-800 rounded p-1">
+<div class="size-full border border-white/20 opacity-40"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Help/Contact Section -->
+<section class="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center">
+<h3 class="text-xl font-bold mb-2">¿Necesita asistencia adicional?</h3>
+<p class="text-slate-500 text-sm mb-6">Nuestro centro de atención para personal de salud está disponible de lunes a viernes de 8:00 AM a 4:00 PM.</p>
+<div class="flex flex-col sm:flex-row justify-center gap-4">
+<div class="flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700">
+<span class="material-symbols-outlined text-primary">call</span>
+<span class="text-sm font-bold">777-123-4567</span>
+</div>
+<div class="flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700">
+<span class="material-symbols-outlined text-primary">mail</span>
+<span class="text-sm font-bold">soporte.salud@morelos.gob.mx</span>
+</div>
+</div>
+</section>
+</main>
+</div>
+</div>
+<!-- Institutional Footer -->
+<footer class="bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 mt-20">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<div class="flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-4">
+<img alt="Escudo del Estado de Morelos" class="h-10 w-auto opacity-80 grayscale hover:grayscale-0 transition-all" data-alt="Escudo oficial del Gobierno de Morelos" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7ZzYeTaiq3whclNOIJQU7E7_ieLWsdNSPB539ReiG_jaGMIMSU3GRIzlAb3VUHDt2MHA6jEv3u7t27x3e6MRbotcS9-gpW186rxsMSUBcwlr8tqJa-2gka3FzJVIcaDwd16sB5yvKuy8RomsnFr8RQeu_E3m4ReSFAwtoUeTqIKLkwq30MYnRpZ62HKIttgWrTLVRLhAUT5GWNC8lsSQS0P9uoSXMeSBJP9WPg0QisSyDqjT18c12SNwJI1qc2gH8Sb2_o2LIJpl8"/>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-800 dark:text-slate-200">Gobierno del Estado de Morelos</span>
+<span class="text-[10px] text-slate-500 uppercase tracking-widest">Secretaría de Salud Estatal</span>
+</div>
+</div>
+<div class="flex gap-8">
+<div class="text-center md:text-left">
+<h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Marco Legal</h4>
+<ul class="space-y-2">
+<li><a class="text-xs text-slate-500 hover:text-primary transition-colors" href="#">Aviso de Privacidad</a></li>
+<li><a class="text-xs text-slate-500 hover:text-primary transition-colors" href="#">Normativa Estatal</a></li>
+</ul>
+</div>
+<div class="text-center md:text-left">
+<h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Enlaces</h4>
+<ul class="space-y-2">
+<li><a class="text-xs text-slate-500 hover:text-primary transition-colors" href="#">Portal Morelos</a></li>
+<li><a class="text-xs text-slate-500 hover:text-primary transition-colors" href="#">SSA Federal</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="mt-12 pt-8 border-t border-slate-50 dark:border-slate-800 text-center">
+<p class="text-[10px] text-slate-400">© 2023 Todos los derechos reservados. Servicios de Salud de Morelos. La información contenida es confidencial y para uso exclusivo de personal autorizado.</p>
+</div>
+</div>
+</footer>
+</body></html>
