@@ -49,9 +49,9 @@ const getProgressBarColor = (cobertura: number) => {
 
 export default function ReportesPage() {
     const [isExportOpen, setIsExportOpen] = useState(false);
-    const [exportType, setExportType] = useState<'excel'|'pdf'|'csv'>('excel');
+    const [exportType, setExportType] = useState<'excel' | 'pdf' | 'csv'>('excel');
 
-    const handleExport = (type: 'excel'|'pdf'|'csv') => {
+    const handleExport = (type: 'excel' | 'pdf' | 'csv') => {
         setExportType(type);
         setIsExportOpen(true);
     };
@@ -173,9 +173,9 @@ export default function ReportesPage() {
                     <div className="relative aspect-[4/3] rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center overflow-hidden border border-slate-100 dark:border-slate-700">
                         {/* Simulated Google Maps Interface */}
                         <div className="relative w-full h-full bg-[#e5e3df] dark:bg-slate-800 overflow-hidden">
-                            <div className="absolute inset-0 opacity-40">
+                            <div className="absolute inset-0 opacity-70 dark:opacity-40">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img alt="Mapa Base Morelos" className="w-full h-full object-cover grayscale dark:invert" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAu-femusaUFr1VuKPW92sQ89wAN7cTsSd0-9D8k01wu6Bzn9fQpKfa0Fxctr_uPKVOIUHhtmwEmD1vED_zMyTsc4pyPs1wJuxT6hd6Vx2Hd9g_z1K5A6c71R861lDgodFvzr-gXWR7jnyRe50AkEQ2bihP0tcy7-uIKiiO5xesZHkvliT0rJ0xoMYoJPCsjlgI9OcuJG5TS9tnhsOZnvfXQRQKFggJ74lthygvqe3Dxv3pUunhJ3v84p2XyI1_bZExISdiZ4cBNRz" />
+                                <img alt="Mapa Base Morelos" className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-screen scale-110" src="/morelos_map.png" />
                             </div>
 
                             {/* Map Markers */}
@@ -254,10 +254,10 @@ export default function ReportesPage() {
                     </table>
                 </div>
             </div>
-        
-            <ExportModal 
-                isOpen={isExportOpen} 
-                onClose={() => setIsExportOpen(false)} 
+
+            <ExportModal
+                isOpen={isExportOpen}
+                onClose={() => setIsExportOpen(false)}
                 fileType={exportType}
             />
         </div>
