@@ -63,10 +63,11 @@ const colorMap: any = {
     }
 };
 
-export const renderTableNinos = (records: any[] = []) => (
-    <div className="p-2 lg:p-4 bg-slate-50/50 dark:bg-slate-900/20">
-        <div className="border border-slate-200 dark:border-slate-700/50 rounded-2xl md:rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-slate-900 flex-1 flex flex-col">
-            <div className="hidden md:grid grid-cols-12 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-widest p-4 items-center">
+export const renderTableNinos = (records: any[] = [], isCompact: boolean = false) => (
+    <div className={`p-2 lg:p-4 bg-slate-50/50 dark:bg-slate-900/20 ${isCompact ? 'h-full flex flex-col' : ''}`}>
+        <div className={`border border-slate-200 dark:border-slate-700/50 rounded-2xl md:rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-slate-900 flex flex-col ${isCompact ? 'flex-1 h-full' : ''}`}>
+            {/* Header only shows if NOT compact, OR we render a simplified header for compact mode */}
+            <div className={`hidden md:grid grid-cols-12 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-widest p-4 items-center ${isCompact ? 'print:hidden' : ''}`}>
                 <div className="col-span-3 pl-2">Vacuna / Inmunógeno</div>
                 <div className="col-span-3">Enfermedad Que Previene</div>
                 <div className="col-span-2 text-center">Dosis</div>
@@ -74,30 +75,30 @@ export const renderTableNinos = (records: any[] = []) => (
                 <div className="col-span-2 text-right pr-2">Fecha y Lote</div>
             </div>
 
-            <div className="flex-1 flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 text-xs font-medium text-slate-800 dark:text-slate-200">
+            <div className={`flex-1 flex flex-col font-medium text-slate-800 dark:text-slate-200 ${isCompact ? 'vaccine-grid flex-row flex-wrap items-stretch p-1 bg-slate-100' : 'divide-y divide-slate-100 dark:divide-slate-800/50 text-xs'}`}>
                 {/* BCG - Única */}
                 {(() => {
                     const rec = findRecord(records, 'BCG', '');
                     return (
-                        <div className="flex flex-col md:flex-row relative group bg-white dark:bg-slate-900 overflow-hidden">
-                            <div className="md:w-1/2 flex items-center p-4 md:p-5 relative bg-blue-50/50 dark:bg-blue-900/10 border-b md:border-b-0 border-slate-100 dark:border-slate-800">
+                        <div className={`flex flex-col relative group bg-white dark:bg-slate-900 overflow-hidden ${isCompact ? 'rounded-xl border border-slate-200 flex-1 table-vaccines' : 'md:flex-row'}`}>
+                            <div className={`${isCompact ? 'p-2 pb-1 border-b' : 'md:w-1/2 p-4 md:p-5 border-b md:border-b-0'} flex items-center relative bg-blue-50/50 dark:bg-blue-900/10 border-slate-100 dark:border-slate-800`}>
                                 <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500"></div>
-                                <div className="flex-1 grid grid-cols-2 gap-4">
-                                    <div className="font-black text-blue-900 dark:text-blue-400 text-sm md:text-base tracking-tight pl-3">BCG</div>
-                                    <div className="text-slate-600 dark:text-slate-400 font-medium text-xs md:text-sm flex items-center">Tuberculosis</div>
+                                <div className={`flex-1 flex ${isCompact ? 'flex-col gap-0' : 'grid grid-cols-2 gap-4'}`}>
+                                    <div className={`font-black text-blue-900 dark:text-blue-400 tracking-tight pl-2 ${isCompact ? 'text-[11px]' : 'text-sm md:text-base pl-3'}`}>BCG</div>
+                                    <div className={`text-slate-600 dark:text-slate-400 font-medium flex items-center ${isCompact ? 'text-[9px] pl-2 leading-tight' : 'text-xs md:text-sm'}`}>Tuberculosis</div>
                                 </div>
                             </div>
-                            <div className="md:w-1/2 flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900">
-                                <div className="flex items-center p-3 md:p-4 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                                    <div className="w-1/3 md:w-1/4 flex justify-start md:justify-center">
-                                        <span className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider relative shrink-0">Única</span>
+                            <div className={`${isCompact ? 'w-full' : 'md:w-1/2'} flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900`}>
+                                <div className={`flex items-center hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors ${isCompact ? 'p-1.5' : 'p-3 md:p-4'}`}>
+                                    <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/4 flex justify-start md:justify-center'}`}>
+                                        <span className={`bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full font-bold relative shrink-0 ${isCompact ? 'text-[8px] px-1.5 py-0.5' : 'px-3 py-1 text-[10px] uppercase tracking-wider'}`}>Única</span>
                                     </div>
-                                    <div className="w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight">Al nacer</div>
-                                    <div className="w-1/3 md:w-1/2 flex flex-col items-end pr-2">
-                                        <div className={`font-bold ${rec ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                                    <div className={`${isCompact ? 'w-1/3 text-[8px] font-bold text-slate-500 leading-tight' : 'w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight'}`}>Al nacer</div>
+                                    <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/2'} flex flex-col items-end pr-1`}>
+                                        <div className={`font-bold ${isCompact ? 'text-[9px]' : ''} ${rec ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
                                             {rec ? formatDate(rec.dateAdministered) : 'PENDIENTE'}
                                         </div>
-                                        {rec && <div className="font-mono text-[9px] text-emerald-700/70 dark:text-emerald-400/70 mt-0.5 uppercase">Lote: {rec.lotNumber || 'A124-B'}</div>}
+                                        {rec && <div className={`font-mono text-emerald-700/70 dark:text-emerald-400/70 mt-0.5 uppercase ${isCompact ? 'text-[7px]' : 'text-[9px]'}`}>Lote: {rec.lotNumber || 'A124-B'}</div>}
                                     </div>
                                 </div>
                             </div>
@@ -111,52 +112,52 @@ export const renderTableNinos = (records: any[] = []) => (
                     const rec2 = findRecord(records, 'Hepatitis B', 'Segunda');
                     const rec3 = findRecord(records, 'Hepatitis B', 'Tercera');
                     return (
-                        <div className="flex flex-col md:flex-row relative group bg-white dark:bg-slate-900 overflow-hidden border-t border-slate-200 dark:border-slate-800">
-                            <div className="md:w-1/2 flex items-center p-4 md:p-5 relative bg-orange-50/50 dark:bg-orange-900/10 border-b md:border-b-0 border-slate-100 dark:border-slate-800">
+                        <div className={`flex flex-col relative group bg-white dark:bg-slate-900 overflow-hidden ${isCompact ? 'rounded-xl border border-slate-200 flex-1 table-vaccines' : 'md:flex-row border-t border-slate-200 dark:border-slate-800'}`}>
+                            <div className={`${isCompact ? 'p-2 pb-1 border-b' : 'md:w-1/2 p-4 md:p-5 border-b md:border-b-0'} flex items-center relative bg-orange-50/50 dark:bg-orange-900/10 border-slate-100 dark:border-slate-800`}>
                                 <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-orange-500"></div>
-                                <div className="flex-1 grid grid-cols-2 gap-4">
-                                    <div className="font-black text-orange-700 dark:text-orange-400 text-sm md:text-base tracking-tight pl-3">Hepatitis B</div>
-                                    <div className="text-slate-600 dark:text-slate-400 font-medium text-xs md:text-sm flex items-center">Hepatitis B</div>
+                                <div className={`flex-1 flex ${isCompact ? 'flex-col gap-0' : 'grid grid-cols-2 gap-4'}`}>
+                                    <div className={`font-black text-orange-700 dark:text-orange-400 tracking-tight pl-2 ${isCompact ? 'text-[11px]' : 'text-sm md:text-base pl-3'}`}>Hepatitis B</div>
+                                    <div className={`text-slate-600 dark:text-slate-400 font-medium flex items-center ${isCompact ? 'text-[9px] pl-2 leading-tight' : 'text-xs md:text-sm'}`}>Hepatitis B</div>
                                 </div>
                             </div>
-                            <div className="md:w-1/2 flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900">
+                            <div className={`${isCompact ? 'w-full' : 'md:w-1/2'} flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900`}>
                                 {/* Dosis 1 */}
-                                <div className="flex items-center p-3 md:p-4 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                                    <div className="w-1/3 md:w-1/4 flex justify-start md:justify-center">
-                                        <span className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider relative shrink-0">Primera</span>
+                                <div className={`flex items-center hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors ${isCompact ? 'p-1.5' : 'p-3 md:p-4'}`}>
+                                    <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/4 flex justify-start md:justify-center'}`}>
+                                        <span className={`bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full font-bold relative shrink-0 ${isCompact ? 'text-[8px] px-1.5 py-0.5' : 'px-3 py-1 text-[10px] uppercase tracking-wider'}`}>Primera</span>
                                     </div>
-                                    <div className="w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight">Al nacer</div>
-                                    <div className="w-1/3 md:w-1/2 flex flex-col items-end pr-2">
-                                        <div className={`font-bold ${rec1 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                                    <div className={`${isCompact ? 'w-1/3 text-[8px] font-bold text-slate-500 leading-tight' : 'w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight'}`}>Al nacer</div>
+                                    <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/2'} flex flex-col items-end pr-1`}>
+                                        <div className={`font-bold ${isCompact ? 'text-[9px]' : ''} ${rec1 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
                                             {rec1 ? formatDate(rec1.dateAdministered) : 'PENDIENTE'}
                                         </div>
-                                        {rec1 && <div className="font-mono text-[9px] text-slate-500 dark:text-slate-400 mt-0.5 uppercase">Lote: {rec1.lotNumber || 'HEX-992'}</div>}
+                                        {rec1 && <div className={`font-mono text-slate-500 dark:text-slate-400 mt-0.5 uppercase ${isCompact ? 'text-[7px]' : 'text-[9px]'}`}>Lote: {rec1.lotNumber || 'HEX-992'}</div>}
                                     </div>
                                 </div>
                                 {/* Dosis 2 */}
-                                <div className="flex items-center p-3 md:p-4 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                                    <div className="w-1/3 md:w-1/4 flex justify-start md:justify-center">
-                                        <span className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider relative shrink-0">Segunda</span>
+                                <div className={`flex items-center hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors ${isCompact ? 'p-1.5' : 'p-3 md:p-4'}`}>
+                                    <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/4 flex justify-start md:justify-center'}`}>
+                                        <span className={`bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full font-bold relative shrink-0 ${isCompact ? 'text-[8px] px-1.5 py-0.5' : 'px-3 py-1 text-[10px] uppercase tracking-wider'}`}>Segunda</span>
                                     </div>
-                                    <div className="w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight">2 Meses</div>
-                                    <div className="w-1/3 md:w-1/2 flex flex-col items-end pr-2">
-                                        <div className={`font-bold ${rec2 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                                    <div className={`${isCompact ? 'w-1/3 text-[8px] font-bold text-slate-500 leading-tight' : 'w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight'}`}>2 Meses</div>
+                                    <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/2'} flex flex-col items-end pr-1`}>
+                                        <div className={`font-bold ${isCompact ? 'text-[9px]' : ''} ${rec2 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
                                             {rec2 ? formatDate(rec2.dateAdministered) : 'PENDIENTE'}
                                         </div>
-                                        {rec2 && <div className="font-mono text-[9px] text-slate-500 dark:text-slate-400 mt-0.5 uppercase">Lote: {rec2.lotNumber || 'BCG-001'}</div>}
+                                        {rec2 && <div className={`font-mono text-slate-500 dark:text-slate-400 mt-0.5 uppercase ${isCompact ? 'text-[7px]' : 'text-[9px]'}`}>Lote: {rec2.lotNumber || 'BCG-001'}</div>}
                                     </div>
                                 </div>
                                 {/* Dosis 3 */}
-                                <div className="flex items-center p-3 md:p-4 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                                    <div className="w-1/3 md:w-1/4 flex justify-start md:justify-center">
-                                        <span className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider relative shrink-0">Tercera</span>
+                                <div className={`flex items-center hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors ${isCompact ? 'p-1.5' : 'p-3 md:p-4'}`}>
+                                    <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/4 flex justify-start md:justify-center'}`}>
+                                        <span className={`bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full font-bold relative shrink-0 ${isCompact ? 'text-[8px] px-1.5 py-0.5' : 'px-3 py-1 text-[10px] uppercase tracking-wider'}`}>Tercera</span>
                                     </div>
-                                    <div className="w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight">6 Meses</div>
-                                    <div className="w-1/3 md:w-1/2 flex flex-col items-end pr-2">
-                                        <div className={`font-bold ${rec3 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                                    <div className={`${isCompact ? 'w-1/3 text-[8px] font-bold text-slate-500 leading-tight' : 'w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight'}`}>6 Meses</div>
+                                    <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/2'} flex flex-col items-end pr-1`}>
+                                        <div className={`font-bold ${isCompact ? 'text-[9px]' : ''} ${rec3 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
                                             {rec3 ? formatDate(rec3.dateAdministered) : 'PENDIENTE'}
                                         </div>
-                                        {rec3 && <div className="font-mono text-[9px] text-slate-500 dark:text-slate-400 mt-0.5 uppercase">Lote: {rec3.lotNumber || 'SRP-X1'}</div>}
+                                        {rec3 && <div className={`font-mono text-slate-500 dark:text-slate-400 mt-0.5 uppercase ${isCompact ? 'text-[7px]' : 'text-[9px]'}`}>Lote: {rec3.lotNumber || 'SRP-X1'}</div>}
                                     </div>
                                 </div>
                             </div>
@@ -172,26 +173,26 @@ export const renderTableNinos = (records: any[] = []) => (
                         age: d === 'Primera' ? '2 Meses' : d === 'Segunda' ? '4 Meses' : d === 'Tercera' ? '6 Meses' : '18 Meses'
                     }));
                     return (
-                        <div className="flex flex-col md:flex-row relative group bg-white dark:bg-slate-900 overflow-hidden border-t border-slate-200 dark:border-slate-800">
-                            <div className="md:w-1/2 flex items-center p-4 md:p-5 relative bg-indigo-50/50 dark:bg-indigo-900/10 border-b md:border-b-0 border-slate-100 dark:border-slate-800">
+                        <div className={`flex flex-col relative group bg-white dark:bg-slate-900 overflow-hidden ${isCompact ? 'rounded-xl border border-slate-200 flex-1 table-vaccines' : 'md:flex-row border-t border-slate-200 dark:border-slate-800'}`}>
+                            <div className={`${isCompact ? 'p-2 pb-1 border-b' : 'md:w-1/2 p-4 md:p-5 border-b md:border-b-0'} flex items-center relative bg-indigo-50/50 dark:bg-indigo-900/10 border-slate-100 dark:border-slate-800`}>
                                 <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-indigo-500"></div>
-                                <div className="flex-1 grid grid-cols-2 gap-4">
-                                    <div className="font-black text-indigo-700 dark:text-indigo-400 text-sm md:text-base tracking-tight pl-3">Hexavalente</div>
-                                    <div className="text-slate-600 dark:text-slate-400 font-medium text-xs leading-snug">Difteria, Tosferina, Tétanos, Polio e Infecciones por H. Influenzae</div>
+                                <div className={`flex-1 flex ${isCompact ? 'flex-col gap-0' : 'grid grid-cols-2 gap-4'}`}>
+                                    <div className={`font-black text-indigo-700 dark:text-indigo-400 tracking-tight pl-2 ${isCompact ? 'text-[11px]' : 'text-sm md:text-base pl-3'}`}>Hexavalente</div>
+                                    <div className={`text-slate-600 dark:text-slate-400 font-medium flex items-center ${isCompact ? 'text-[9px] pl-2 leading-tight' : 'text-xs md:text-sm'}`}>Difteria, Tosferina, ... e H. Influenzae</div>
                                 </div>
                             </div>
-                            <div className="md:w-1/2 flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900">
+                            <div className={`${isCompact ? 'w-full' : 'md:w-1/2'} flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900`}>
                                 {doses.map((d, i) => (
-                                    <div key={i} className="flex items-center p-3 md:p-4 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                                        <div className="w-1/3 md:w-1/4 flex justify-start md:justify-center">
-                                            <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider relative shrink-0">{d.name}</span>
+                                    <div key={i} className={`flex items-center hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors ${isCompact ? 'p-1.5' : 'p-3 md:p-4'}`}>
+                                        <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/4 flex justify-start md:justify-center'}`}>
+                                            <span className={`bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full font-bold relative shrink-0 ${isCompact ? 'text-[8px] px-1.5 py-0.5' : 'px-3 py-1 text-[10px] uppercase tracking-wider'}`}>{d.name}</span>
                                         </div>
-                                        <div className="w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight">{d.age}</div>
-                                        <div className="w-1/3 md:w-1/2 flex flex-col items-end pr-2">
-                                            <div className={`font-bold ${d.rec ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                                        <div className={`${isCompact ? 'w-1/3 text-[8px] font-bold text-slate-500 leading-tight' : 'w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight'}`}>{d.age}</div>
+                                        <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/2'} flex flex-col items-end pr-1`}>
+                                            <div className={`font-bold ${isCompact ? 'text-[9px]' : ''} ${d.rec ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
                                                 {d.rec ? formatDate(d.rec.dateAdministered) : 'PENDIENTE'}
                                             </div>
-                                            {d.rec && <div className="font-mono text-[9px] text-emerald-600 dark:text-emerald-400 mt-0.5 uppercase flex items-center gap-1"><span className="material-symbols-outlined text-[10px]">check_circle</span> {d.rec.lotNumber || 'LOTE'}</div>}
+                                            {d.rec && <div className={`font-mono text-emerald-600 dark:text-emerald-400 mt-0.5 uppercase flex items-center gap-1 ${isCompact ? 'text-[7px]' : 'text-[9px]'}`}><span className={`material-symbols-outlined ${isCompact ? 'text-[8px]' : 'text-[10px]'}`}>check_circle</span> {d.rec.lotNumber || 'LOTE'}</div>}
                                         </div>
                                     </div>
                                 ))}
@@ -204,22 +205,22 @@ export const renderTableNinos = (records: any[] = []) => (
                 {(() => {
                     const rec = findRecord(records, 'DPT', '');
                     return (
-                        <div className="flex flex-col md:flex-row relative group bg-white dark:bg-slate-900 overflow-hidden border-t border-slate-200 dark:border-slate-800">
-                            <div className="md:w-1/2 flex items-center p-4 md:p-5 relative bg-yellow-50/50 dark:bg-yellow-900/10 border-b md:border-b-0 border-slate-100 dark:border-slate-800">
+                        <div className={`flex flex-col relative group bg-white dark:bg-slate-900 overflow-hidden ${isCompact ? 'rounded-xl border border-slate-200 flex-1 table-vaccines' : 'md:flex-row border-t border-slate-200 dark:border-slate-800'}`}>
+                            <div className={`${isCompact ? 'p-2 pb-1 border-b' : 'md:w-1/2 p-4 md:p-5 border-b md:border-b-0'} flex items-center relative bg-yellow-50/50 dark:bg-yellow-900/10 border-slate-100 dark:border-slate-800`}>
                                 <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-yellow-500"></div>
-                                <div className="flex-1 grid grid-cols-2 gap-4">
-                                    <div className="font-black text-yellow-700 dark:text-yellow-500 text-sm md:text-base tracking-tight pl-3">DPT</div>
-                                    <div className="text-slate-600 dark:text-slate-400 font-medium text-xs md:text-sm flex items-center">Difteria, Tosferina, Tétanos</div>
+                                <div className={`flex-1 flex ${isCompact ? 'flex-col gap-0' : 'grid grid-cols-2 gap-4'}`}>
+                                    <div className={`font-black text-yellow-700 dark:text-yellow-500 tracking-tight pl-2 ${isCompact ? 'text-[11px]' : 'text-sm md:text-base pl-3'}`}>DPT</div>
+                                    <div className={`text-slate-600 dark:text-slate-400 font-medium flex items-center ${isCompact ? 'text-[9px] pl-2 leading-tight' : 'text-xs md:text-sm'}`}>Difteria, Tosferina, Tétanos</div>
                                 </div>
                             </div>
-                            <div className="md:w-1/2 flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900">
-                                <div className="flex items-center p-3 md:p-4 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                                    <div className="w-1/3 md:w-1/4 flex justify-start md:justify-center">
-                                        <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider relative shrink-0">Refuerzo</span>
+                            <div className={`${isCompact ? 'w-full' : 'md:w-1/2'} flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900`}>
+                                <div className={`flex items-center hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors ${isCompact ? 'p-1.5' : 'p-3 md:p-4'}`}>
+                                    <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/4 flex justify-start md:justify-center'}`}>
+                                        <span className={`bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full font-bold relative shrink-0 ${isCompact ? 'text-[8px] px-1.5 py-0.5' : 'px-3 py-1 text-[10px] uppercase tracking-wider'}`}>Refuerzo</span>
                                     </div>
-                                    <div className="w-1/3 md:w-1/4 text-left md:text-center text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-widest leading-tight">4 Años</div>
-                                    <div className="w-1/3 md:w-1/2 flex flex-col items-end pr-2">
-                                        <div className={`font-bold ${rec ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                                    <div className={`${isCompact ? 'w-1/3 text-[8px] font-bold text-slate-500 leading-tight' : 'w-1/3 md:w-1/4 text-left md:text-center text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-widest leading-tight'}`}>4 Años</div>
+                                    <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/2'} flex flex-col items-end pr-1`}>
+                                        <div className={`font-bold ${isCompact ? 'text-[9px]' : ''} ${rec ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
                                             {rec ? formatDate(rec.dateAdministered) : 'PENDIENTE'}
                                         </div>
                                     </div>
@@ -242,28 +243,28 @@ export const renderTableNinos = (records: any[] = []) => (
                     const c = config[vaccine];
                     const styles = colorMap[c.color];
                     return (
-                        <div key={vaccine} className="flex flex-col md:flex-row relative group bg-white dark:bg-slate-900 overflow-hidden border-t border-slate-200 dark:border-slate-800">
-                            <div className={`md:w-1/2 flex items-center p-4 md:p-5 relative ${styles.bg} border-b md:border-b-0 border-slate-100 dark:border-slate-800`}>
+                        <div key={vaccine} className={`flex flex-col relative group bg-white dark:bg-slate-900 overflow-hidden ${isCompact ? 'rounded-xl border border-slate-200 flex-1 table-vaccines' : 'md:flex-row border-t border-slate-200 dark:border-slate-800'}`}>
+                            <div className={`${isCompact ? 'p-2 pb-1 border-b' : 'md:w-1/2 p-4 md:p-5 border-b md:border-b-0'} flex items-center relative ${styles.bg} border-slate-100 dark:border-slate-800`}>
                                 <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${styles.border}`}></div>
-                                <div className="flex-1 grid grid-cols-2 gap-4">
-                                    <div className={`font-black ${styles.text} text-sm md:text-base tracking-tight pl-3`}>{vaccine === 'Neumococo' ? 'Neumocócica' : vaccine}</div>
-                                    <div className="text-slate-600 dark:text-slate-400 font-medium text-xs md:text-sm flex items-center">{c.disease}</div>
+                                <div className={`flex-1 flex ${isCompact ? 'flex-col gap-0' : 'grid grid-cols-2 gap-4'}`}>
+                                    <div className={`font-black ${styles.text} tracking-tight pl-2 ${isCompact ? 'text-[11px]' : 'text-sm md:text-base pl-3'}`}>{vaccine === 'Neumococo' ? 'Neumocócica' : vaccine}</div>
+                                    <div className={`text-slate-600 dark:text-slate-400 font-medium flex items-center ${isCompact ? 'text-[9px] pl-2 leading-tight' : 'text-xs md:text-sm'}`}>{c.disease}</div>
                                 </div>
                             </div>
-                            <div className="md:w-1/2 flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900">
+                            <div className={`${isCompact ? 'w-full' : 'md:w-1/2'} flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900`}>
                                 {c.doses.map((d: any, i: number) => {
                                     const rec = findRecord(records, vaccine, d.n);
                                     return (
-                                        <div key={i} className="flex items-center p-3 md:p-4 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                                            <div className="w-1/3 md:w-1/4 flex justify-start md:justify-center">
-                                                <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider relative shrink-0">{d.n}</span>
+                                        <div key={i} className={`flex items-center hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors ${isCompact ? 'p-1.5' : 'p-3 md:p-4'}`}>
+                                            <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/4 flex justify-start md:justify-center'}`}>
+                                                <span className={`bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full font-bold relative shrink-0 ${isCompact ? 'text-[8px] px-1.5 py-0.5' : 'px-3 py-1 text-[10px] uppercase tracking-wider'}`}>{d.n}</span>
                                             </div>
-                                            <div className="w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight">{d.a}</div>
-                                            <div className="w-1/3 md:w-1/2 flex flex-col items-end pr-2">
-                                                <div className={`font-bold ${rec ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                                            <div className={`${isCompact ? 'w-1/3 text-[8px] font-bold text-slate-500 leading-tight' : 'w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight'}`}>{d.a}</div>
+                                            <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/2'} flex flex-col items-end pr-1`}>
+                                                <div className={`font-bold ${isCompact ? 'text-[9px]' : ''} ${rec ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
                                                     {rec ? formatDate(rec.dateAdministered) : 'PENDIENTE'}
                                                 </div>
-                                                {rec && <div className="font-mono text-[9px] text-emerald-700 dark:text-emerald-400 mt-0.5 uppercase flex items-center gap-1"><span className="material-symbols-outlined text-[10px] text-emerald-500">check_circle</span> {rec.lotNumber || 'LOTE'}</div>}
+                                                {rec && <div className={`font-mono text-emerald-700 dark:text-emerald-400 mt-0.5 uppercase flex items-center gap-1 ${isCompact ? 'text-[7px]' : 'text-[9px]'}`}><span className={`material-symbols-outlined text-emerald-500 ${isCompact ? 'text-[8px]' : 'text-[10px]'}`}>check_circle</span> {rec.lotNumber || 'LOTE'}</div>}
                                             </div>
                                         </div>
                                     );
@@ -277,10 +278,11 @@ export const renderTableNinos = (records: any[] = []) => (
     </div>
 );
 
-export const renderTableAdolescentes = (records: any[] = []) => (
-    <div className="p-2 lg:p-4 bg-slate-50/50 dark:bg-slate-900/20">
-        <div className="border border-slate-200 dark:border-slate-700/50 rounded-2xl md:rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-slate-900 flex-1 flex flex-col">
-            <div className="hidden md:grid grid-cols-12 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-widest p-4 items-center">
+export const renderTableAdolescentes = (records: any[] = [], isCompact: boolean = false) => (
+    <div className={`p-2 lg:p-4 bg-slate-50/50 dark:bg-slate-900/20 ${isCompact ? 'h-full flex flex-col' : ''}`}>
+        <div className={`border border-slate-200 dark:border-slate-700/50 rounded-2xl md:rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-slate-900 flex flex-col ${isCompact ? 'flex-1 h-full' : ''}`}>
+            {/* Header only shows if NOT compact, OR we render a simplified header for compact mode */}
+            <div className={`hidden md:grid grid-cols-12 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-widest p-4 items-center ${isCompact ? 'print:hidden' : ''}`}>
                 <div className="col-span-3 pl-2">Vacuna / Inmunógeno</div>
                 <div className="col-span-3">Enfermedad Que Previene</div>
                 <div className="col-span-2 text-center">Dosis</div>
@@ -288,7 +290,7 @@ export const renderTableAdolescentes = (records: any[] = []) => (
                 <div className="col-span-2 text-right pr-2">Fecha y Lote</div>
             </div>
 
-            <div className="flex-1 flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 text-xs font-medium text-slate-800 dark:text-slate-200">
+            <div className={`flex-1 flex flex-col font-medium text-slate-800 dark:text-slate-200 ${isCompact ? 'vaccine-grid flex-row flex-wrap items-stretch p-1 bg-slate-100' : 'divide-y divide-slate-100 dark:divide-slate-800/50 text-xs'}`}>
                 {['Hepatitis B', 'Td', 'Tdpa', 'SR', 'VPH', 'Influenza'].map(vaccine => {
                     const config: any = {
                         'Hepatitis B': { color: 'orange', disease: 'Hepatitis B', doses: [{ n: 'Primera', a: '11 años' }, { n: 'Segunda', a: '4 semanas después' }] },
@@ -301,28 +303,28 @@ export const renderTableAdolescentes = (records: any[] = []) => (
                     const c = config[vaccine];
                     const styles = colorMap[c.color];
                     return (
-                        <div key={vaccine} className="flex flex-col md:flex-row relative group bg-white dark:bg-slate-900 overflow-hidden border-t border-slate-200 dark:border-slate-800">
-                            <div className={`md:w-1/2 flex items-center p-4 md:p-5 relative ${styles.bg} border-b md:border-b-0 border-slate-100 dark:border-slate-800`}>
+                        <div key={vaccine} className={`flex flex-col relative group bg-white dark:bg-slate-900 overflow-hidden ${isCompact ? 'rounded-xl border border-slate-200 flex-1 table-vaccines' : 'md:flex-row border-t border-slate-200 dark:border-slate-800'}`}>
+                            <div className={`${isCompact ? 'p-2 pb-1 border-b' : 'md:w-1/2 p-4 md:p-5 border-b md:border-b-0'} flex items-center relative ${styles.bg} border-slate-100 dark:border-slate-800`}>
                                 <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${styles.border}`}></div>
-                                <div className="flex-1 grid grid-cols-2 gap-4">
-                                    <div className={`font-black ${styles.text} text-sm md:text-base tracking-tight pl-3`}>{vaccine}</div>
-                                    <div className="text-slate-600 dark:text-slate-400 font-medium text-xs md:text-sm flex items-center">{c.disease}</div>
+                                <div className={`flex-1 flex ${isCompact ? 'flex-col gap-0' : 'grid grid-cols-2 gap-4'}`}>
+                                    <div className={`font-black ${styles.text} tracking-tight pl-2 ${isCompact ? 'text-[11px]' : 'text-sm md:text-base pl-3'}`}>{vaccine}</div>
+                                    <div className={`text-slate-600 dark:text-slate-400 font-medium flex items-center ${isCompact ? 'text-[9px] pl-2 leading-tight' : 'text-xs md:text-sm'}`}>{c.disease}</div>
                                 </div>
                             </div>
-                            <div className="md:w-1/2 flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900">
+                            <div className={`${isCompact ? 'w-full' : 'md:w-1/2'} flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900`}>
                                 {c.doses.map((d: any, i: number) => {
                                     const rec = findRecord(records, vaccine, d.n);
                                     return (
-                                        <div key={i} className="flex items-center p-3 md:p-4 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                                            <div className="w-1/3 md:w-1/4 flex justify-start md:justify-center">
-                                                <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider relative shrink-0">{d.n}</span>
+                                        <div key={i} className={`flex items-center hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors ${isCompact ? 'p-1.5' : 'p-3 md:p-4'}`}>
+                                            <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/4 flex justify-start md:justify-center'}`}>
+                                                <span className={`bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full font-bold relative shrink-0 ${isCompact ? 'text-[8px] px-1.5 py-0.5' : 'px-3 py-1 text-[10px] uppercase tracking-wider'}`}>{d.n}</span>
                                             </div>
-                                            <div className="w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight">{d.a}</div>
-                                            <div className="w-1/3 md:w-1/2 flex flex-col items-end pr-2">
-                                                <div className={`font-bold ${rec ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                                            <div className={`${isCompact ? 'w-1/3 text-[8px] font-bold text-slate-500 leading-tight' : 'w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight'}`}>{d.a}</div>
+                                            <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/2'} flex flex-col items-end pr-1`}>
+                                                <div className={`font-bold ${isCompact ? 'text-[9px]' : ''} ${rec ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
                                                     {rec ? formatDate(rec.dateAdministered) : 'PENDIENTE'}
                                                 </div>
-                                                {rec && <div className="font-mono text-[9px] text-slate-400 dark:text-slate-500 mt-0.5 uppercase">Lote: {rec.lotNumber || 'LOTE'}</div>}
+                                                {rec && <div className={`font-mono text-slate-400 dark:text-slate-500 mt-0.5 uppercase flex items-center gap-1 ${isCompact ? 'text-[7px]' : 'text-[9px]'}`}><span className={`material-symbols-outlined text-emerald-500 ${isCompact ? 'text-[8px]' : 'text-[10px]'}`}>check_circle</span> {rec.lotNumber || 'LOTE'}</div>}
                                             </div>
                                         </div>
                                     );
@@ -336,10 +338,11 @@ export const renderTableAdolescentes = (records: any[] = []) => (
     </div>
 );
 
-export const renderTableMayores = (records: any[] = []) => (
-    <div className="p-2 lg:p-4 bg-slate-50/50 dark:bg-slate-900/20">
-        <div className="border border-slate-200 dark:border-slate-700/50 rounded-2xl md:rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-slate-900 flex-1 flex flex-col">
-            <div className="hidden md:grid grid-cols-12 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-widest p-4 items-center">
+export const renderTableMayores = (records: any[] = [], isCompact: boolean = false) => (
+    <div className={`p-2 lg:p-4 bg-slate-50/50 dark:bg-slate-900/20 ${isCompact ? 'h-full flex flex-col' : ''}`}>
+        <div className={`border border-slate-200 dark:border-slate-700/50 rounded-2xl md:rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-slate-900 flex flex-col ${isCompact ? 'flex-1 h-full' : ''}`}>
+            {/* Header only shows if NOT compact, OR we render a simplified header for compact mode */}
+            <div className={`hidden md:grid grid-cols-12 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-widest p-4 items-center ${isCompact ? 'print:hidden' : ''}`}>
                 <div className="col-span-3 pl-2">Vacuna / Inmunógeno</div>
                 <div className="col-span-3">Enfermedad Que Previene</div>
                 <div className="col-span-2 text-center">Dosis</div>
@@ -347,7 +350,7 @@ export const renderTableMayores = (records: any[] = []) => (
                 <div className="col-span-2 text-right pr-2">Fecha y Lote</div>
             </div>
 
-            <div className="flex-1 flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 text-xs font-medium text-slate-800 dark:text-slate-200">
+            <div className={`flex-1 flex flex-col font-medium text-slate-800 dark:text-slate-200 ${isCompact ? 'vaccine-grid flex-row flex-wrap items-stretch p-1 bg-slate-100' : 'divide-y divide-slate-100 dark:divide-slate-800/50 text-xs'}`}>
                 {['Neumocócica', 'Td', 'Influenza'].map(vaccine => {
                     const config: any = {
                         'Neumocócica': { color: 'sky', disease: 'Neumonía por neumococo', doses: [{ n: 'Única', a: 'A partir 65 años' }] },
@@ -357,28 +360,28 @@ export const renderTableMayores = (records: any[] = []) => (
                     const c = config[vaccine];
                     const styles = colorMap[c.color];
                     return (
-                        <div key={vaccine} className="flex flex-col md:flex-row relative group bg-white dark:bg-slate-900 overflow-hidden border-t border-slate-200 dark:border-slate-800">
-                            <div className={`md:w-1/2 flex items-center p-4 md:p-5 relative ${styles.bg} border-b md:border-b-0 border-slate-100 dark:border-slate-800`}>
+                        <div key={vaccine} className={`flex flex-col relative group bg-white dark:bg-slate-900 overflow-hidden ${isCompact ? 'rounded-xl border border-slate-200 flex-1 table-vaccines' : 'md:flex-row border-t border-slate-200 dark:border-slate-800'}`}>
+                            <div className={`${isCompact ? 'p-2 pb-1 border-b' : 'md:w-1/2 p-4 md:p-5 border-b md:border-b-0'} flex items-center relative ${styles.bg} border-slate-100 dark:border-slate-800`}>
                                 <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${styles.border}`}></div>
-                                <div className="flex-1 grid grid-cols-2 gap-4">
-                                    <div className={`font-black ${styles.text} text-sm md:text-base tracking-tight pl-3`}>{vaccine}</div>
-                                    <div className="text-slate-600 dark:text-slate-400 font-medium text-xs md:text-sm flex items-center">{c.disease}</div>
+                                <div className={`flex-1 flex ${isCompact ? 'flex-col gap-0' : 'grid grid-cols-2 gap-4'}`}>
+                                    <div className={`font-black ${styles.text} tracking-tight pl-2 ${isCompact ? 'text-[11px]' : 'text-sm md:text-base pl-3'}`}>{vaccine}</div>
+                                    <div className={`text-slate-600 dark:text-slate-400 font-medium flex items-center ${isCompact ? 'text-[9px] pl-2 leading-tight' : 'text-xs md:text-sm'}`}>{c.disease}</div>
                                 </div>
                             </div>
-                            <div className="md:w-1/2 flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900">
+                            <div className={`${isCompact ? 'w-full' : 'md:w-1/2'} flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900`}>
                                 {c.doses.map((d: any, i: number) => {
                                     const rec = findRecord(records, vaccine, d.n);
                                     return (
-                                        <div key={i} className="flex items-center p-3 md:p-4 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                                            <div className="w-1/3 md:w-1/4 flex justify-start md:justify-center">
-                                                <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider relative shrink-0">{d.n}</span>
+                                        <div key={i} className={`flex items-center hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors ${isCompact ? 'p-1.5' : 'p-3 md:p-4'}`}>
+                                            <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/4 flex justify-start md:justify-center'}`}>
+                                                <span className={`bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full font-bold relative shrink-0 ${isCompact ? 'text-[8px] px-1.5 py-0.5' : 'px-3 py-1 text-[10px] uppercase tracking-wider'}`}>{d.n}</span>
                                             </div>
-                                            <div className="w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight">{d.a}</div>
-                                            <div className="w-1/3 md:w-1/2 flex flex-col items-end pr-2">
-                                                <div className={`font-bold ${rec ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                                            <div className={`${isCompact ? 'w-1/3 text-[8px] font-bold text-slate-500 leading-tight' : 'w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight'}`}>{d.a}</div>
+                                            <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/2'} flex flex-col items-end pr-1`}>
+                                                <div className={`font-bold ${isCompact ? 'text-[9px]' : ''} ${rec ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
                                                     {rec ? formatDate(rec.dateAdministered) : 'PENDIENTE'}
                                                 </div>
-                                                {rec && <div className="font-mono text-[9px] text-slate-400 dark:text-slate-500 mt-0.5 uppercase">Lote: {rec.lotNumber || 'LOTE'}</div>}
+                                                {rec && <div className={`font-mono text-slate-400 dark:text-slate-500 mt-0.5 uppercase flex items-center gap-1 ${isCompact ? 'text-[7px]' : 'text-[9px]'}`}><span className={`material-symbols-outlined text-emerald-500 ${isCompact ? 'text-[8px]' : 'text-[10px]'}`}>check_circle</span> {rec.lotNumber || 'LOTE'}</div>}
                                             </div>
                                         </div>
                                     );
@@ -392,10 +395,11 @@ export const renderTableMayores = (records: any[] = []) => (
     </div>
 );
 
-export const renderTableAdultos = (records: any[] = []) => (
-    <div className="p-2 lg:p-4 bg-slate-50/50 dark:bg-slate-900/20">
-        <div className="border border-slate-200 dark:border-slate-700/50 rounded-2xl md:rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-slate-900 flex-1 flex flex-col">
-            <div className="hidden md:grid grid-cols-12 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-widest p-4 items-center">
+export const renderTableAdultos = (records: any[] = [], isCompact: boolean = false) => (
+    <div className={`p-2 lg:p-4 bg-slate-50/50 dark:bg-slate-900/20 ${isCompact ? 'h-full flex flex-col' : ''}`}>
+        <div className={`border border-slate-200 dark:border-slate-700/50 rounded-2xl md:rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-slate-900 flex flex-col ${isCompact ? 'flex-1 h-full' : ''}`}>
+            {/* Header only shows if NOT compact, OR we render a simplified header for compact mode */}
+            <div className={`hidden md:grid grid-cols-12 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-widest p-4 items-center ${isCompact ? 'print:hidden' : ''}`}>
                 <div className="col-span-3 pl-2">Vacuna / Inmunógeno</div>
                 <div className="col-span-3">Enfermedad Que Previene</div>
                 <div className="col-span-2 text-center">Dosis</div>
@@ -403,7 +407,7 @@ export const renderTableAdultos = (records: any[] = []) => (
                 <div className="col-span-2 text-right pr-2">Fecha y Lote</div>
             </div>
 
-            <div className="flex-1 flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 text-xs font-medium text-slate-800 dark:text-slate-200">
+            <div className={`flex-1 flex flex-col font-medium text-slate-800 dark:text-slate-200 ${isCompact ? 'vaccine-grid flex-row flex-wrap items-stretch p-1 bg-slate-100' : 'divide-y divide-slate-100 dark:divide-slate-800/50 text-xs'}`}>
                 {['SR', 'Td', 'Influenza'].map(vaccine => {
                     const config: any = {
                         'SR': { color: 'orange', disease: 'Sarampión y Rubéola', doses: [{ n: 'Adicional', a: 'Riesgo o Brote' }] },
@@ -413,28 +417,28 @@ export const renderTableAdultos = (records: any[] = []) => (
                     const c = config[vaccine];
                     const styles = colorMap[c.color];
                     return (
-                        <div key={vaccine} className="flex flex-col md:flex-row relative group bg-white dark:bg-slate-900 overflow-hidden border-t border-slate-200 dark:border-slate-800">
-                            <div className={`md:w-1/2 flex items-center p-4 md:p-5 relative ${styles.bg} border-b md:border-b-0 border-slate-100 dark:border-slate-800`}>
+                        <div key={vaccine} className={`flex flex-col relative group bg-white dark:bg-slate-900 overflow-hidden ${isCompact ? 'rounded-xl border border-slate-200 flex-1 table-vaccines' : 'md:flex-row border-t border-slate-200 dark:border-slate-800'}`}>
+                            <div className={`${isCompact ? 'p-2 pb-1 border-b' : 'md:w-1/2 p-4 md:p-5 border-b md:border-b-0'} flex items-center relative ${styles.bg} border-slate-100 dark:border-slate-800`}>
                                 <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${styles.border}`}></div>
-                                <div className="flex-1 grid grid-cols-2 gap-4">
-                                    <div className={`font-black ${styles.text} text-sm md:text-base tracking-tight pl-3`}>{vaccine}</div>
-                                    <div className="text-slate-600 dark:text-slate-400 font-medium text-xs md:text-sm flex items-center">{c.disease}</div>
+                                <div className={`flex-1 flex ${isCompact ? 'flex-col gap-0' : 'grid grid-cols-2 gap-4'}`}>
+                                    <div className={`font-black ${styles.text} tracking-tight pl-2 ${isCompact ? 'text-[11px]' : 'text-sm md:text-base pl-3'}`}>{vaccine}</div>
+                                    <div className={`text-slate-600 dark:text-slate-400 font-medium flex items-center ${isCompact ? 'text-[9px] pl-2 leading-tight' : 'text-xs md:text-sm'}`}>{c.disease}</div>
                                 </div>
                             </div>
-                            <div className="md:w-1/2 flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900">
+                            <div className={`${isCompact ? 'w-full' : 'md:w-1/2'} flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900`}>
                                 {c.doses.map((d: any, i: number) => {
                                     const rec = findRecord(records, vaccine, d.n);
                                     return (
-                                        <div key={i} className="flex items-center p-3 md:p-4 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                                            <div className="w-1/3 md:w-1/4 flex justify-start md:justify-center">
-                                                <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider relative shrink-0">{d.n}</span>
+                                        <div key={i} className={`flex items-center hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors ${isCompact ? 'p-1.5' : 'p-3 md:p-4'}`}>
+                                            <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/4 flex justify-start md:justify-center'}`}>
+                                                <span className={`bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full font-bold relative shrink-0 ${isCompact ? 'text-[8px] px-1.5 py-0.5' : 'px-3 py-1 text-[10px] uppercase tracking-wider'}`}>{d.n}</span>
                                             </div>
-                                            <div className="w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight">{d.a}</div>
-                                            <div className="w-1/3 md:w-1/2 flex flex-col items-end pr-2">
-                                                <div className={`font-bold ${rec ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                                            <div className={`${isCompact ? 'w-1/3 text-[8px] font-bold text-slate-500 leading-tight' : 'w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight'}`}>{d.a}</div>
+                                            <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/2'} flex flex-col items-end pr-1`}>
+                                                <div className={`font-bold ${isCompact ? 'text-[9px]' : ''} ${rec ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
                                                     {rec ? formatDate(rec.dateAdministered) : 'PENDIENTE'}
                                                 </div>
-                                                {rec && <div className="font-mono text-[9px] text-slate-400 dark:text-slate-500 mt-0.5 uppercase">Lote: {rec.lotNumber || 'LOTE'}</div>}
+                                                {rec && <div className={`font-mono text-slate-400 dark:text-slate-500 mt-0.5 uppercase flex items-center gap-1 ${isCompact ? 'text-[7px]' : 'text-[9px]'}`}><span className={`material-symbols-outlined text-emerald-500 ${isCompact ? 'text-[8px]' : 'text-[10px]'}`}>check_circle</span> {rec.lotNumber || 'LOTE'}</div>}
                                             </div>
                                         </div>
                                     );
@@ -448,10 +452,11 @@ export const renderTableAdultos = (records: any[] = []) => (
     </div>
 );
 
-export const renderTableRiesgo = (records: any[] = []) => (
-    <div className="p-2 lg:p-4 bg-slate-50/50 dark:bg-slate-900/20">
-        <div className="border border-slate-200 dark:border-slate-700/50 rounded-2xl md:rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-slate-900 flex-1 flex flex-col">
-            <div className="hidden md:grid grid-cols-12 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-widest p-4 items-center">
+export const renderTableRiesgo = (records: any[] = [], isCompact: boolean = false) => (
+    <div className={`p-2 lg:p-4 bg-slate-50/50 dark:bg-slate-900/20 ${isCompact ? 'h-full flex flex-col' : ''}`}>
+        <div className={`border border-slate-200 dark:border-slate-700/50 rounded-2xl md:rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-slate-900 flex flex-col ${isCompact ? 'flex-1 h-full' : ''}`}>
+            {/* Header only shows if NOT compact, OR we render a simplified header for compact mode */}
+            <div className={`hidden md:grid grid-cols-12 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-widest p-4 items-center ${isCompact ? 'print:hidden' : ''}`}>
                 <div className="col-span-3 pl-2 flex items-center gap-2">Vacuna <span className="text-red-600 bg-red-100 dark:bg-red-900/40 px-2 py-0.5 rounded-full text-[8px] font-bold">RIESGO</span></div>
                 <div className="col-span-3">Enfermedad Que Previene</div>
                 <div className="col-span-2 text-center">Dosis</div>
@@ -459,7 +464,7 @@ export const renderTableRiesgo = (records: any[] = []) => (
                 <div className="col-span-2 text-right pr-2">Fecha y Lote</div>
             </div>
 
-            <div className="flex-1 flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 text-xs font-medium text-slate-800 dark:text-slate-200">
+            <div className={`flex-1 flex flex-col font-medium text-slate-800 dark:text-slate-200 ${isCompact ? 'vaccine-grid flex-row flex-wrap items-stretch p-1 bg-slate-100' : 'divide-y divide-slate-100 dark:divide-slate-800/50 text-xs'}`}>
                 {['Hepatitis B', 'Influenza', 'COVID-19'].map(vaccine => {
                     const config: any = {
                         'Hepatitis B': { color: 'orange', disease: 'Hepatitis B', doses: [{ n: 'Primera', a: 'Al Ingreso' }, { n: 'Segunda', a: '1 Mes Después' }, { n: 'Tercera', a: '6 Meses Después' }] },
@@ -469,28 +474,28 @@ export const renderTableRiesgo = (records: any[] = []) => (
                     const c = config[vaccine];
                     const styles = colorMap[c.color];
                     return (
-                        <div key={vaccine} className="flex flex-col md:flex-row relative group bg-white dark:bg-slate-900 overflow-hidden border-t border-slate-200 dark:border-slate-800">
-                            <div className={`md:w-1/2 flex items-center p-4 md:p-5 relative ${styles.bg} border-b md:border-b-0 border-slate-100 dark:border-slate-800`}>
+                        <div key={vaccine} className={`flex flex-col relative group bg-white dark:bg-slate-900 overflow-hidden ${isCompact ? 'rounded-xl border border-slate-200 flex-1 table-vaccines' : 'md:flex-row border-t border-slate-200 dark:border-slate-800'}`}>
+                            <div className={`${isCompact ? 'p-2 pb-1 border-b' : 'md:w-1/2 p-4 md:p-5 border-b md:border-b-0'} flex items-center relative ${styles.bg} border-slate-100 dark:border-slate-800`}>
                                 <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${styles.border}`}></div>
-                                <div className="flex-1 grid grid-cols-2 gap-4">
-                                    <div className={`font-black ${styles.text} text-sm md:text-base tracking-tight pl-3`}>{vaccine}</div>
-                                    <div className="text-slate-600 dark:text-slate-400 font-medium text-xs md:text-sm flex items-center">{c.disease}</div>
+                                <div className={`flex-1 flex ${isCompact ? 'flex-col gap-0' : 'grid grid-cols-2 gap-4'}`}>
+                                    <div className={`font-black ${styles.text} tracking-tight pl-2 ${isCompact ? 'text-[11px]' : 'text-sm md:text-base pl-3'}`}>{vaccine}</div>
+                                    <div className={`text-slate-600 dark:text-slate-400 font-medium flex items-center ${isCompact ? 'text-[9px] pl-2 leading-tight' : 'text-xs md:text-sm'}`}>{c.disease}</div>
                                 </div>
                             </div>
-                            <div className="md:w-1/2 flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900">
+                            <div className={`${isCompact ? 'w-full' : 'md:w-1/2'} flex flex-col divide-y divide-slate-100 dark:divide-slate-800/50 bg-white dark:bg-slate-900`}>
                                 {c.doses.map((d: any, i: number) => {
                                     const rec = findRecord(records, vaccine, d.n);
                                     return (
-                                        <div key={i} className="flex items-center p-3 md:p-4 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                                            <div className="w-1/3 md:w-1/4 flex justify-start md:justify-center">
-                                                <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider relative shrink-0">{d.n}</span>
+                                        <div key={i} className={`flex items-center hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors ${isCompact ? 'p-1.5' : 'p-3 md:p-4'}`}>
+                                            <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/4 flex justify-start md:justify-center'}`}>
+                                                <span className={`bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full font-bold relative shrink-0 ${isCompact ? 'text-[8px] px-1.5 py-0.5' : 'px-3 py-1 text-[10px] uppercase tracking-wider'}`}>{d.n}</span>
                                             </div>
-                                            <div className="w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight">{d.a}</div>
-                                            <div className="w-1/3 md:w-1/2 flex flex-col items-end pr-2">
-                                                <div className={`font-bold ${rec ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                                            <div className={`${isCompact ? 'w-1/3 text-[8px] font-bold text-slate-500 leading-tight' : 'w-1/3 md:w-1/4 text-left md:text-center text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-tight'}`}>{d.a}</div>
+                                            <div className={`${isCompact ? 'w-1/3' : 'w-1/3 md:w-1/2'} flex flex-col items-end pr-1`}>
+                                                <div className={`font-bold ${isCompact ? 'text-[9px]' : ''} ${rec ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
                                                     {rec ? formatDate(rec.dateAdministered) : 'PENDIENTE'}
                                                 </div>
-                                                {rec && <div className="font-mono text-[9px] text-slate-400 dark:text-slate-500 mt-0.5 uppercase">Lote: {rec.lotNumber || 'LOTE'}</div>}
+                                                {rec && <div className={`font-mono text-slate-400 dark:text-slate-500 mt-0.5 uppercase flex items-center gap-1 ${isCompact ? 'text-[7px]' : 'text-[9px]'}`}><span className={`material-symbols-outlined text-emerald-500 ${isCompact ? 'text-[8px]' : 'text-[10px]'}`}>check_circle</span> {rec.lotNumber || 'LOTE'}</div>}
                                             </div>
                                         </div>
                                     );

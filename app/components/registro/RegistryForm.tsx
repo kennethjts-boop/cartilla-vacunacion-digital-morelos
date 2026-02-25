@@ -20,6 +20,8 @@ export default function RegistryForm({
     const [isPending, setIsPending] = useState(false)
     const [selectedMunicipio, setSelectedMunicipio] = useState('')
     const [filteredCenters, setFilteredCenters] = useState(initialHealthCenters)
+    const [curpData, setCurpData] = useState({ curp: '', dateOfBirth: '', gender: '' })
+    const [isValidating, setIsValidating] = useState(false)
 
     const handleMunicipioChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = e.target.value
@@ -30,6 +32,57 @@ export default function RegistryForm({
             // In a more complex app, we'd fetch this from the API
             // but for now we filter the initial list if possible or just show all
             setFilteredCenters(initialHealthCenters.filter(c => c.municipality === value))
+        }
+    }
+
+    const validarCurp = async () => {
+        const curpInp = document.querySelector('input[name="curp"]') as HTMLInputElement;
+        if (!curpInp || !curpInp.value) {
+            setStatus({ type: 'error', message: 'Por favor ingrese una CURP para validar.' });
+            return;
+        }
+
+        const curp = curpInp.value.toUpperCase();
+
+        // Basic CURP length and format check
+        if (curp.length !== 18) {
+            setStatus({ type: 'error', message: 'La CURP debe tener exactamente 18 caracteres.' });
+            return;
+        }
+
+        setIsValidating(true);
+        setStatus({ type: 'idle', message: '' });
+
+        // Simulate network delay for RENAPO validation
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        try {
+            // Extract Date of Birth from CURP (YYMMDD)
+            const yearStr = curp.substring(4, 6);
+            const month = curp.substring(6, 8);
+            const day = curp.substring(8, 10);
+
+            // Determine century based on the 17th character (letter for >2000, number for <2000)
+            const centuryDigit = curp.charAt(16);
+            const is2000s = isNaN(parseInt(centuryDigit));
+            const fullYear = (is2000s ? '20' : '19') + yearStr;
+
+            const dateOfBirth = `${fullYear}-${month}-${day}`;
+
+            // Extract Gender from CURP (H/M) at position 10
+            const genderChar = curp.charAt(10);
+            const gender = genderChar === 'H' ? 'M' : (genderChar === 'M' ? 'F' : '');
+
+            if (!gender || isNaN(new Date(dateOfBirth).getTime())) {
+                throw new Error("Formato de CURP inválido");
+            }
+
+            setCurpData({ curp, dateOfBirth, gender });
+            setStatus({ type: 'success', message: 'CURP validada correctamente.' });
+        } catch (error) {
+            setStatus({ type: 'error', message: 'La CURP ingresada no parece tener un formato válido.' });
+        } finally {
+            setIsValidating(false);
         }
     }
 
@@ -44,6 +97,7 @@ export default function RegistryForm({
         if (response.success) {
             setStatus({ type: 'success', message: response.message || '' })
             setSelectedMunicipio('')
+            setCurpData({ curp: '', dateOfBirth: '', gender: '' });
             setFilteredCenters(initialHealthCenters)
                 ; (event.target as HTMLFormElement).reset()
         } else {
@@ -80,37 +134,54 @@ export default function RegistryForm({
                                 <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
                                     <span className="material-symbols-outlined">fingerprint</span>
                                 </span>
-                                <input name="curp" required className="block w-full pl-10 pr-3 py-3 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary text-sm uppercase" placeholder="ABCD123456HDFRNS01" type="text" />
+                                <input name="curp" defaultValue={curpData.curp} required className="block w-full pl-10 pr-3 py-3 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary text-sm uppercase" placeholder="ABCD123456HDFRNS01" type="text" />
                             </div>
-                            <button className="px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-opacity-90 transition-all flex items-center gap-2 shadow-sm disabled:opacity-50" type="button" disabled={isPending}>
-                                <span className="material-symbols-outlined">verified</span>
-                                Validar
+                            <button onClick={validarCurp} className="px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-opacity-90 transition-all flex items-center gap-2 shadow-sm disabled:opacity-50" type="button" disabled={isPending || isValidating}>
+                                <span className="material-symbols-outlined">
+                                    {isValidating ? 'sync' : 'verified'}
+                                </span>
+                                {isValidating ? 'Validando...' : 'Validar'}
                             </button>
                         </div>
                     </div>
 
                     <div className="md:col-span-2">
                         <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Nombre Completo *</label>
-                        <input name="fullName" required className="block w-full px-3 py-3 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary text-sm" placeholder="Nombre(s) y apellidos del menor" type="text" />
+                        <input name="fullName" required className="block w-full px-3 py-3 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary text-sm" placeholder="Nombre(s) y apellidos del paciente" type="text" />
                     </div>
 
                     <div>
                         <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Fecha de Nacimiento *</label>
-                        <input name="dateOfBirth" required className="block w-full px-3 py-3 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary text-sm" type="date" />
+                        <input name="dateOfBirth" defaultValue={curpData.dateOfBirth} required className="block w-full px-3 py-3 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary text-sm" type="date" />
                     </div>
 
                     <div>
                         <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Género *</label>
                         <div className="flex gap-4 h-12">
                             <label className="flex-1 flex items-center justify-center gap-2 px-4 border border-slate-300 dark:border-slate-700 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors has-[:checked]:bg-primary/10 has-[:checked]:border-primary has-[:checked]:text-primary">
-                                <input className="text-primary focus:ring-primary" name="gender" type="radio" value="M" required />
+                                <input className="text-primary focus:ring-primary" name="gender" type="radio" value="M" defaultChecked={curpData.gender === 'M'} required />
                                 <span className="text-sm font-medium">Masculino</span>
                             </label>
                             <label className="flex-1 flex items-center justify-center gap-2 px-4 border border-slate-300 dark:border-slate-700 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors has-[:checked]:bg-primary/10 has-[:checked]:border-primary has-[:checked]:text-primary">
-                                <input className="text-primary focus:ring-primary" name="gender" type="radio" value="F" required />
+                                <input className="text-primary focus:ring-primary" name="gender" type="radio" value="F" defaultChecked={curpData.gender === 'F'} required />
                                 <span className="text-sm font-medium">Femenino</span>
                             </label>
                         </div>
+                    </div>
+
+                    <div className="md:col-span-2">
+                        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Tipo de Sangre</label>
+                        <select name="bloodType" className="block w-full px-3 py-3 border border-slate-300 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary text-sm">
+                            <option value="">Desconocido / No especificado</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
                     </div>
                 </div>
             </section>

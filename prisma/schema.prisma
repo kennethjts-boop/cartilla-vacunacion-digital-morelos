@@ -25,6 +25,7 @@ model Patient {
   lastName       String
   dateOfBirth    DateTime
   gender         String
+  bloodType      String?
   municipality   String
   healthCenterId String?
   createdAt      DateTime        @default(now())

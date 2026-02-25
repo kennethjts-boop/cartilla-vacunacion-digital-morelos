@@ -19,7 +19,8 @@ export default async function CartillaPage() {
         ageStr: "2 años",
         ageGroup: "0-9", // Enums: "0-9", "10-19", "20-59", "60+", "riesgo", "viajero"
         healthCenter: "Cuernavaca",
-        gender: "M"
+        gender: "M",
+        bloodType: "A+"
     };
 
     return (

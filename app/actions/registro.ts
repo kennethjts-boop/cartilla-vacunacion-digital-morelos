@@ -9,6 +9,7 @@ export async function registerPatient(formData: FormData) {
         const fullName = formData.get('fullName') as string
         const dateOfBirth = formData.get('dateOfBirth') as string
         const gender = formData.get('gender') as string
+        const bloodType = formData.get('bloodType') as string
         const municipality = formData.get('municipality') as string
         const healthCenterId = formData.get('healthCenterId') as string
 
@@ -35,6 +36,7 @@ export async function registerPatient(formData: FormData) {
                 lastName: lastName || '',
                 dateOfBirth: new Date(dateOfBirth),
                 gender,
+                bloodType: bloodType || null,
                 municipality,
                 healthCenterId,
             }
