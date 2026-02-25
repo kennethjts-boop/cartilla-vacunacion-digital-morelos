@@ -1,10 +1,6 @@
-import { getRecentActivity } from "@/app/actions/dashboard";
-
-export default async function RecentActivityList() {
-    const { success, data, error } = await getRecentActivity()
-
-    if (!success || !data) {
-        return <div className="p-6 text-sm text-red-500">Error: {error}</div>
+export default function RecentActivityList({ data }: { data: any[] }) {
+    if (!data) {
+        return <div className="p-6 text-sm text-red-500">Error cargando actividad reciente</div>
     }
 
     const getStatusBadge = (status: string) => {
@@ -42,7 +38,6 @@ export default async function RecentActivityList() {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {data.map((record: any) => (
                             <tr key={record.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors">
                                 <td className="px-6 py-4 text-xs font-medium text-slate-500">

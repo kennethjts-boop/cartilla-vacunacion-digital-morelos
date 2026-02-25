@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StatCard } from "@/app/components/dashboard/StatCard";
 import DashboardFilters from "@/app/components/dashboard/DashboardFilters";
 import DetailPanel from "@/app/components/dashboard/DetailPanel";
@@ -8,18 +8,53 @@ import CoverageChart from "@/app/components/dashboard/CoverageChart";
 import HeatmapWidget from "@/app/components/dashboard/HeatmapWidget";
 import RecentActivityList from "@/app/components/dashboard/RecentActivityList";
 
-interface DashboardClientProps {
-    stats: {
+type Summary = {
+    ok: boolean;
+    stats?: {
         totalChildren: number;
         completeSchedulePercentage: number;
         delayedVaccinesPercentage: number;
         urgentAlerts: number;
     };
-    municipios: any[];
-}
+    municipios?: any[];
+    recentActivity?: any[];
+    updatedAt?: string;
+    message?: string;
+};
 
-export default function DashboardClient({ stats, municipios }: DashboardClientProps) {
+export default function DashboardClient() {
+    const [loading, setLoading] = useState(true);
+    const [summary, setSummary] = useState<Summary | null>(null);
+    const [error, setError] = useState<string | null>(null);
     const [selectedDetail, setSelectedDetail] = useState<{ title: string; subtitle: string; content: React.ReactNode } | null>(null);
+
+    useEffect(() => {
+        let alive = true;
+
+        (async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                const res = await fetch("/api/dashboard/summary", { cache: "no-store" });
+                const data = (await res.json().catch(() => ({}))) as Summary;
+
+                if (!res.ok || !data?.ok) {
+                    throw new Error(data?.message || `Error ${res.status} en summary`);
+                }
+
+                if (alive) setSummary(data);
+            } catch (e: any) {
+                if (alive) setError(e?.message || "Error cargando dashboard");
+            } finally {
+                if (alive) setLoading(false);
+            }
+        })();
+
+        return () => {
+            alive = false;
+        };
+    }, []);
 
     const openPanel = (title: string, subtitle: string, formula: string, source: string) => {
         setSelectedDetail({
@@ -34,7 +69,7 @@ export default function DashboardClient({ stats, municipios }: DashboardClientPr
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
-                            <label className="text-[10px] font-black text-slate-400调节 uppercase tracking-widest">Fuente</label>
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Fuente</label>
                             <p className="text-sm font-bold text-slate-700 dark:text-slate-200 mt-1">{source}</p>
                         </div>
                         <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
@@ -67,6 +102,14 @@ export default function DashboardClient({ stats, municipios }: DashboardClientPr
             )
         });
     };
+
+    if (loading) return <div className="p-8"><div className="w-8 h-8 rounded-full border-4 border-primary border-t-transparent animate-spin"></div></div>;
+    if (error) return <div className="p-8 text-red-500 font-bold">Error: {error}</div>;
+    if (!summary?.stats) return <div className="p-8 text-amber-500 font-bold">No se pudieron cargar las estadísticas.</div>;
+
+    const stats = summary.stats;
+    const municipios = summary.municipios || [];
+    const recentActivity = summary.recentActivity || [];
 
     return (
         <div className="p-8 space-y-8">
@@ -164,7 +207,7 @@ export default function DashboardClient({ stats, municipios }: DashboardClientPr
             </div>
 
             {/* Activity list */}
-            <RecentActivityList />
+            <RecentActivityList data={recentActivity} />
 
             {/* Sidebar Data Detail */}
             {selectedDetail && (
