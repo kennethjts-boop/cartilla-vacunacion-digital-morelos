@@ -1,13 +1,22 @@
 'use client'
 
-import { useState, useTransition, Suspense } from 'react'
+import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { login } from '@/app/actions/auth'
+
+const fetchWithTimeout = async (url: string, options: RequestInit, ms = 12000) => {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), ms);
+    try {
+        return await fetch(url, { ...options, signal: controller.signal });
+    } finally {
+        clearTimeout(id);
+    }
+};
 
 function LoginForm() {
     const [error, setError] = useState('')
-    const [isPending, startTransition] = useTransition()
+    const [isPending, setIsPending] = useState(false)
     const router = useRouter()
     const searchParams = useSearchParams()
     const defaultRole = searchParams.get('role') || 'Administrador'
@@ -15,16 +24,30 @@ function LoginForm() {
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault()
         setError('')
-        const formData = new FormData(event.currentTarget)
+        setIsPending(true)
 
-        startTransition(async () => {
-            const response = await login(formData)
-            if (response.success) {
-                router.push('/')
-            } else {
-                setError(response.error || 'Error al iniciar sesión')
-            }
-        })
+        const formData = new FormData(event.currentTarget)
+        const email = formData.get('email') as string
+        const password = formData.get('password') as string
+        const role = formData.get('role') as string || defaultRole
+
+        try {
+            const res = await fetchWithTimeout("/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password, role }),
+            }, 12000);
+
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok) throw new Error(data?.message || `Login falló (${res.status})`);
+
+            router.push('/')
+        } catch (err: any) {
+            setError(err?.message || "Error al iniciar sesión")
+        } finally {
+            setIsPending(false)
+        }
     }
     return (
         <div className="bg-[#f5f8f7] dark:bg-slate-900 font-display min-h-screen flex flex-col relative"

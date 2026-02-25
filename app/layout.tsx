@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import 'leaflet/dist/leaflet.css';
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-display" });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
       </head>
       <body suppressHydrationWarning className={`${inter.variable} font-display text-slate-900 bg-background-light dark:bg-background-dark dark:text-slate-100 antialiased`}>
         {children}
+        <SpeedInsights />
       </body>
     </html>
   );
