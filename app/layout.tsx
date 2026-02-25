@@ -7,8 +7,14 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 const inter = Inter({ subsets: ["latin"], variable: "--font-display" });
 
 export const metadata: Metadata = {
-  title: "Estatal Dashboard - Cartilla de Vacunación Digital Morelos (CVD -Morelos)",
-  description: "Monitoreo en tiempo real de la cobertura de vacunación infantil en Morelos.",
+  title: {
+    default: "Tu Cartilla",
+    template: "%s | Tu Cartilla"
+  },
+  description: "Cartilla de Vacunación Digital",
+  icons: {
+    icon: "/favicon.svg"
+  }
 };
 
 export default function RootLayout({
